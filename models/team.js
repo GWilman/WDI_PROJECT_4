@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const teamSchema = new mongoose.Schema({
   name: { type: String, required: 'Team name is required' },
-  crestURL: { type: String },
+  crestUrl: { type: String },
   teamId: { type: Number }
 });
 
