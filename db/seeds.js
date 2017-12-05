@@ -60,6 +60,6 @@ rp({
           });
       });
   })
-  .then(players => console.log(`${players.length} squads players created`))
+  .then(players => console.log(`${players.length} squads created`))
   .catch(err => console.error(err))
   .finally(() => mongoose.connection.close());
