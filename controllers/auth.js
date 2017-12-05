@@ -26,6 +26,6 @@ function login(req, res, next) {
 }
 
 module.exports = {
-  register,
-  login
+  register: register,
+  login: login
 };

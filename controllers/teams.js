@@ -1,5 +1,4 @@
 const Team = require('../models/team');
-const Player = require('../models/player');
 
 function teamsIndex(req, res, next) {
   Team
