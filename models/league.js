@@ -8,4 +8,10 @@ const leagueSchema = new mongoose.Schema({
   timestamps: true
 });
 
+leagueSchema.virtual('users', {
+  ref: 'User',
+  localField: '_id',
+  foreignField: 'leagues'
+});
+
 module.exports = mongoose.model('League', leagueSchema);

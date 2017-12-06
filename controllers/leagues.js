@@ -3,7 +3,7 @@ const League = require('../models/league');
 function leaguesIndex(req, res, next) {
   League
     .find()
-    .populate('createdBy')
+    .populate('createdBy users')
     .exec()
     .then(leagues => res.json(leagues))
     .catch(next);
@@ -21,7 +21,7 @@ function leaguesCreate(req, res, next) {
 function leaguesShow(req, res, next) {
   League
     .findById(req.params.id)
-    .populate('createdBy')
+    .populate('createdBy users')
     .exec()
     .then((league) => {
       if(!league) return res.notFound();

@@ -6,6 +6,7 @@ import Login from '../auth/Login';
 import Register from '../auth/Register';
 import LeaguesNew from '../leagues/LeaguesNew';
 import LeaguesIndex from '../leagues/LeaguesIndex';
+import LeaguesJoin from '../leagues/LeaguesJoin';
 
 const Routes = () => {
   return (
@@ -14,6 +15,7 @@ const Routes = () => {
       <Route path="/login" component={ Login } />
       <Route path="/register" component={ Register } />
       <Route path="/leagues/new" component={ LeaguesNew } />
+      <Route path="/leagues/join" component={ LeaguesJoin } />
       <Route path="/leagues" component={ LeaguesIndex } />
     </Switch>
   );

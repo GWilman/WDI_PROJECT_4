@@ -8,7 +8,7 @@ const LeaguesForm = ({ handleChange, handleSubmit, league, errors }) => {
     <div>
       <Row>
         <Col sm={10} smOffset={2}>
-          <h1>Create New League</h1>
+          <h1>Create League</h1>
         </Col>
       </Row>
       <Form horizontal onSubmit={handleSubmit}>

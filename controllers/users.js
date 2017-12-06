@@ -3,6 +3,7 @@ const User = require('../models/user');
 function usersIndex(req, res, next) {
   User
     .find()
+    .populate('leagues picks')
     .exec()
     .then(users => res.status(200).json(users))
     .catch(next);
@@ -11,6 +12,7 @@ function usersIndex(req, res, next) {
 function usersShow(req, res, next) {
   User
     .findById(req.params.id)
+    .populate('leagues picks')
     .exec()
     .then((user) => {
       if(!user) return res.notFound();
