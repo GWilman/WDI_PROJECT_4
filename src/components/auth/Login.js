@@ -9,12 +9,14 @@ class Login extends React.Component {
     user: {
       email: '',
       password: ''
-    }
+    },
+    errors: {}
   };
 
   handleChange = ({ target: { name, value } }) => {
     const user = Object.assign({}, this.state.user, { [name]: value });
-    this.setState({ user });
+    const errors = Object.assign({}, { errors: '' });
+    this.setState({ user, errors });
   }
 
   handleSubmit = (e) => {
@@ -26,13 +28,16 @@ class Login extends React.Component {
         Auth.setToken(res.data.token);
         this.props.history.push('/');
       })
-      .catch(err => console.error(err));
+      .catch(err => {
+        this.setState({ errors: err.response.data });
+      });
   }
 
   render() {
     return (
       <LoginForm
         user={this.state.user}
+        errors={this.state.errors}
         handleChange={this.handleChange}
         handleSubmit={this.handleSubmit}
       />

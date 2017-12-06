@@ -1,11 +1,16 @@
 import React from 'react';
 
-import { FormGroup, FormControl, Form, Col, ControlLabel, Button } from 'react-bootstrap';
+import { FormGroup, FormControl, Form, Col, Row, ControlLabel, Button } from 'react-bootstrap';
 
-const LoginForm = ({ handleChange, handleSubmit, user }) => {
+const LoginForm = ({ handleChange, handleSubmit, user, errors }) => {
+  const formInvalid = Object.keys(errors).some(key => errors[key]);
   return (
     <div>
-      <h1>Login</h1>
+      <Row>
+        <Col sm={10} smOffset={2}>
+          <h1>Login</h1>
+        </Col>
+      </Row>
       <Form horizontal onSubmit={handleSubmit}>
         <FormGroup controlId="formHorizontalEmail">
           <Col componentClass={ControlLabel} sm={2}>
@@ -34,12 +39,13 @@ const LoginForm = ({ handleChange, handleSubmit, user }) => {
               onChange={handleChange}
               value={user.password}
             />
+            { errors.message && <small>{errors.message}</small> }
           </Col>
         </FormGroup>
 
         <FormGroup>
           <Col smOffset={2} sm={10}>
-            <Button type="submit">
+            <Button type="submit" disabled={formInvalid}>
               Sign in
             </Button>
           </Col>

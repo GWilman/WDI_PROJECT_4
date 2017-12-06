@@ -1,11 +1,16 @@
 import React from 'react';
 
-import { FormGroup, FormControl, Form, Col, ControlLabel, Button, HelpBlock } from 'react-bootstrap';
+import { FormGroup, FormControl, Form, Col, Row, ControlLabel, Button } from 'react-bootstrap';
 
-const RegisterForm = ({ handleChange, handleSubmit, user }) => {
+const RegisterForm = ({ handleChange, handleSubmit, user, errors }) => {
+  const formInvalid = Object.keys(errors).some(key => errors[key]);
   return (
     <div>
-      <h1>Register</h1>
+      <Row>
+        <Col sm={10} smOffset={2}>
+          <h1>Register</h1>
+        </Col>
+      </Row>
       <Form horizontal onSubmit={handleSubmit}>
         <FormGroup controlId="formHorizontalUsername">
           <Col componentClass={ControlLabel} sm={2}>
@@ -19,6 +24,7 @@ const RegisterForm = ({ handleChange, handleSubmit, user }) => {
               onChange={handleChange}
               value={user.username}
             />
+            { errors.username && <small>{errors.username}</small> }
           </Col>
         </FormGroup>
 
@@ -34,6 +40,7 @@ const RegisterForm = ({ handleChange, handleSubmit, user }) => {
               onChange={handleChange}
               value={user.email}
             />
+            { errors.email && <small>{errors.email}</small> }
           </Col>
         </FormGroup>
 
@@ -49,8 +56,8 @@ const RegisterForm = ({ handleChange, handleSubmit, user }) => {
               onChange={handleChange}
               value={user.image}
             />
-            <HelpBlock>Please provide an image url (optional)</HelpBlock>
           </Col>
+          { errors.image && <small>{errors.image}</small> }
         </FormGroup>
 
         <FormGroup controlId="formHorizontalPassword">
@@ -65,6 +72,7 @@ const RegisterForm = ({ handleChange, handleSubmit, user }) => {
               onChange={handleChange}
               value={user.password}
             />
+            { errors.password && <small>{errors.password}</small> }
           </Col>
         </FormGroup>
 
@@ -80,12 +88,13 @@ const RegisterForm = ({ handleChange, handleSubmit, user }) => {
               onChange={handleChange}
               value={user.passwordConfirmation}
             />
+            { errors.passwordConfirmation && <small>{errors.passwordConfirmation}</small> }
           </Col>
         </FormGroup>
 
         <FormGroup>
           <Col smOffset={2} sm={10}>
-            <Button type="submit">
+            <Button type="submit" disabled={formInvalid}>
               Create Account
             </Button>
           </Col>
