@@ -9,12 +9,14 @@ const { dbURI } = require('../config/environment');
 const User = require('../models/user');
 const Team = require('../models/team');
 const Player = require('../models/player');
+const League = require('../models/league');
 
 mongoose.connect(dbURI, { useMongoClient: true });
 
 User.collection.drop();
 Team.collection.drop();
 Player.collection.drop();
+League.collection.drop();
 
 rp({
   url: 'http://api.football-data.org/v1/competitions/464/teams',

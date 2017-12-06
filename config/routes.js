@@ -36,7 +36,7 @@ router.route('/players/:id')
 
 router.route('/leagues')
   .get(leagues.index)
-  .post(secureRoute,leagues.create);
+  .post(secureRoute, leagues.create);
 
 router.route('/leagues/:id')
   .get(leagues.show)

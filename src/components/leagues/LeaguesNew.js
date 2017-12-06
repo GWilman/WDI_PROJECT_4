@@ -1,5 +1,6 @@
 import React from 'react';
 import Axios from 'axios';
+import Auth from '../../lib/Auth';
 
 import LeaguesForm from './LeaguesForm';
 
@@ -22,15 +23,18 @@ class LeaguesNew extends React.Component {
     e.preventDefault();
 
     Axios
-      .post('/api/leagues', this.state.league)
+      .post('/api/leagues', this.state.league, {
+        headers: {'Authorization': `Bearer ${Auth.getToken()}`}
+      })
       .then(() => this.props.history.push('/'))
-      .catch(err => this.setState({ errors: err.response.data.errors }));
+      .catch(err => {
+        this.setState({ errors: err.response.data.errors });
+      });
   }
 
   render() {
     return (
       <LeaguesForm
-        history={this.props.history}
         handleSubmit={this.handleSubmit}
         handleChange={this.handleChange}
         league={this.state.league}

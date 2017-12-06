@@ -24,6 +24,11 @@ const MainNav = ({ history }) => {
         <Nav pullRight>
           { Auth.isAuthenticated() &&
             <NavItem href="#">
+              <Link to="/leagues/new">Create League</Link>
+            </NavItem>
+          }
+          { Auth.isAuthenticated() &&
+            <NavItem href="#">
               <Link to="/leagues">My Leagues</Link>
             </NavItem>
           }
