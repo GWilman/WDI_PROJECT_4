@@ -18,7 +18,7 @@ class Register extends React.Component {
 
   handleChange = ({ target: { name, value }}) => {
     const user = Object.assign({}, this.state.user, { [name]: value });
-    const errors = Object.assign({}, this.state.errors, { [name]: value });
+    const errors = Object.assign({}, this.state.errors, { [name]: '' });
     this.setState({ user, errors });
   }
 
