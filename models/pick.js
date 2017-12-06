@@ -12,6 +12,8 @@ const pickSchema = new mongoose.Schema({
   mostYellows: { type: mongoose.Schema.ObjectId, ref: 'Player' },
   sentOff: { type: mongoose.Schema.ObjectId, ref: 'Player' },
   finalMoM: { type: mongoose.Schema.ObjectId, ref: 'Player' }
+}, {
+  timestamps: true
 });
 
 module.exports = mongoose.model('Pick', pickSchema);

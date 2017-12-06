@@ -1,4 +1,5 @@
 class Auth {
+
   static setToken(token) {
     return localStorage.setItem('token', token);
   }
@@ -8,21 +9,19 @@ class Auth {
   }
 
   static isAuthenticated() {
-    const payload = this.getPayload();
-    if(!payload) return false;
-    const now = (new Date()).getTime() / 1000;
-    return payload.exp > now;
+    return !!this.getToken();
   }
 
-  static logout() {
+  static removeToken() {
     localStorage.removeItem('token');
   }
 
   static getPayload() {
     const token = this.getToken();
-    if(!token) return null;
+    if (!token) return null;
     return JSON.parse(atob(token.split('.')[1]));
   }
+
 }
 
 export default Auth;
