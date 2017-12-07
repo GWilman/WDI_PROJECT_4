@@ -29,6 +29,7 @@ class LeaguesIndex extends React.Component {
     const leagueId = e.target.id;
     const userId = Auth.getPayload();
     this.state.user.leagues.push(leagueId);
+    // this.setState({ leagues: leagueId })
     Axios
       .put(`/api/users/${userId.userId}`, this.state.user)
       .then(() => {
@@ -39,6 +40,9 @@ class LeaguesIndex extends React.Component {
   }
 
   render() {
+    console.log(this.state.user);
+    // const userLeagues = this.state.user.leagues.map(league => league.id);
+    // console.log(userLeagues);
     return (
       <div>
         <h1>Join a League</h1>

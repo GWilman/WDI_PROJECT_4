@@ -16,7 +16,6 @@ class LeaguesIndex extends React.Component {
       .get(`/api/users/${userId.userId}`)
       .then(res => {
         this.setState({ leagues: res.data.leagues });
-        console.log(this.state.leagues);
       })
       .catch(err => console.error(err));
   }

@@ -14,4 +14,11 @@ leagueSchema.virtual('users', {
   foreignField: 'leagues'
 });
 
+leagueSchema.virtual('picks', {
+  ref: 'Pick',
+  localField: '_id',
+  foreignField: 'league'
+});
+
+
 module.exports = mongoose.model('League', leagueSchema);

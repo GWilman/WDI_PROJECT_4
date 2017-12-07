@@ -66,7 +66,7 @@ class Picker extends React.Component {
       .post('/api/picks', this.state.picks, {
         headers: {'Authorization': `Bearer ${Auth.getToken()}`}
       })
-      .then(res => console.log(res))
+      .then()
       .catch(err => console.error(err));
   }
 

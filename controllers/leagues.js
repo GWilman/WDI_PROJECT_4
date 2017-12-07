@@ -21,7 +21,7 @@ function leaguesCreate(req, res, next) {
 function leaguesShow(req, res, next) {
   League
     .findById(req.params.id)
-    .populate('createdBy users')
+    .populate('createdBy users picks')
     .exec()
     .then((league) => {
       if(!league) return res.notFound();

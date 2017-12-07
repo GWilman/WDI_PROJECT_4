@@ -3,48 +3,49 @@ import Axios from 'axios';
 // import { Link } from 'react-router-dom';
 // import _ from 'lodash';
 
+import Auth from '../../lib/Auth';
+
 import Picker from './Picker.js';
+import PicksGrid from './PicksGrid.js';
 
 class LeaguesShow extends React.Component {
   state = {
     league: {},
-    teams: [],
-    players: []
+    hasMadePick: false
   }
 
+
   componentDidMount() {
+    console.log('componentDidMount');
     Axios
       .get(`/api/leagues/${this.props.match.params.id}`)
-      .then(res => this.setState({ league: res.data }))
+      .then(res => {
+        console.log('setting state first time');
+        this.setState({ league: res.data });
+      })
+      .then(() => {
+        console.log('checking if user made picks or not');
+        const userId = Auth.getPayload();
+        for (let i = 0; i < this.state.league.picks.length; i++) {
+          if (this.state.league.picks[i].createdBy === userId.userId) {
+            this.setState({ hasMadePick: true });
+          }
+        }
+      })
       .catch(err => console.error(err));
-
-    // Axios
-    //   .get('/api/teams')
-    //   .then(res => {
-    //     this.setState({ teams: res.data });
-    //     console.log(this.state.teams);
-    //   })
-    //   .catch(err => console.error(err));
   }
 
   render() {
+    console.log('rendering');
     return (
       <div>
         <h1>{this.state.league.name}</h1>
         <h3>Stake: £{this.state.league.stake}</h3>
-        <Picker />
-        {/* { this.state.leagues.map(league =>
-          <div key={league.id} className="league-container">
-            <h3>{league.name}</h3>
-            <p>Stake: <strong>£{league.stake}</strong></p>
-            { league.createdBy.username &&
-            <p>Owner: <strong>{league.createdBy.username}</strong></p>
-            }
-            <Link to={`/leagues/${league.id}`}>
-              <button className="btn btn-primary">League Hub</button>
-            </Link>
-          </div>
-        )} */}
+        { !this.state.hasMadePick ? (
+          <Picker />
+        ) : (
+          <PicksGrid />
+        )}
       </div>
     );
   }

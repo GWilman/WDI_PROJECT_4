@@ -2,7 +2,7 @@ const Pick = require('../models/pick');
 
 function picksIndex(req, res, next) {
   Pick
-    .find()
+    .find(req.query)
     .populate('createdBy league champion runnerUp topScoringTeam mostYellowsTeam topScorer mostAssists mostYellows sentOff finalMoM')
     .exec()
     .then(picks => res.json(picks))
