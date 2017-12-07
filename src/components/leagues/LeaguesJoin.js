@@ -18,20 +18,23 @@ class LeaguesIndex extends React.Component {
       .catch(err => console.error(err));
 
     const userId = Auth.getPayload();
-    console.log('user id:', userId);
     Axios
       .get(`/api/users/${userId.userId}`)
       .then(res => this.setState({ user: res.data }))
       .catch(err => console.error(err));
+
   }
 
   joinLeague = (e) => {
-    console.log('leagueId:', e.target.id);
+    const leagueId = e.target.id;
     const userId = Auth.getPayload();
-    this.state.user.leagues.push(e.target.id);
+    this.state.user.leagues.push(leagueId);
     Axios
       .put(`/api/users/${userId.userId}`, this.state.user)
-      .then(res => console.log('res', res))
+      .then(() => {
+        document.getElementById(leagueId).setAttribute('disabled', 'true');
+        document.getElementById(leagueId).innerHTML = 'Joined';
+      })
       .catch(err => console.error(err));
   }
 

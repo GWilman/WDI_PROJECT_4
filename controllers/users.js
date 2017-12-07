@@ -3,7 +3,7 @@ const User = require('../models/user');
 function usersIndex(req, res, next) {
   User
     .find()
-    .populate('leagues picks')
+    .populate('leagues picks leagues.createdBy')
     .exec()
     .then(users => res.status(200).json(users))
     .catch(next);
@@ -12,7 +12,7 @@ function usersIndex(req, res, next) {
 function usersShow(req, res, next) {
   User
     .findById(req.params.id)
-    .populate('leagues picks')
+    .populate('leagues picks leagues.createdBy')
     .exec()
     .then((user) => {
       if(!user) return res.notFound();
@@ -22,12 +22,19 @@ function usersShow(req, res, next) {
 }
 
 function usersUpdate(req, res, next) {
+  for (var i = 0; i < req.body.leagues.length; i++) {
+    if (req.body.leagues[i].id) {
+      req.body.leagues[i] = req.body.leagues[i].id;
+    }
+  }
   User
     .findById(req.params.id)
     .exec()
     .then((user) => {
       if(!user) return res.notFound();
-      user = Object.assign(user, req.body);
+      for ( const field in req.body) {
+        user[field] = req.body[field];
+      }
       return user.save();
     })
     .then(user => res.json(user))

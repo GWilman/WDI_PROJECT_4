@@ -1,7 +1,9 @@
 import React from 'react';
 import Axios from 'axios';
-// import { Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 // import _ from 'lodash';
+
+import Auth from '../../lib/Auth';
 
 class LeaguesIndex extends React.Component {
   state = {
@@ -9,9 +11,13 @@ class LeaguesIndex extends React.Component {
   }
 
   componentDidMount() {
+    const userId = Auth.getPayload();
     Axios
-      .get('/api/leagues')
-      .then(res => this.setState({ leagues: res.data }))
+      .get(`/api/users/${userId.userId}`)
+      .then(res => {
+        this.setState({ leagues: res.data.leagues });
+        console.log(this.state.leagues);
+      })
       .catch(err => console.error(err));
   }
 
@@ -23,9 +29,12 @@ class LeaguesIndex extends React.Component {
           <div key={league.id} className="league-container">
             <h3>{league.name}</h3>
             <p>Stake: <strong>£{league.stake}</strong></p>
-            { league.createdBy &&
+            { league.createdBy.username &&
             <p>Owner: <strong>{league.createdBy.username}</strong></p>
             }
+            <Link to={`/leagues/${league.id}`}>
+              <button className="btn btn-primary">League Hub</button>
+            </Link>
           </div>
         )}
       </div>

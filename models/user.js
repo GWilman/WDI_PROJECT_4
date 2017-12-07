@@ -19,8 +19,10 @@ userSchema
   });
 
 userSchema.pre('validate', function checkPassword(next) {
-  if(!this._passwordConfirmation || this._passwordConfirmation !== this.password) {
-    this.invalidate('passwordConfirmation', 'Passwords do not match.');
+  if (this.isNew) {
+    if(!this._passwordConfirmation || this._passwordConfirmation !== this.password) {
+      this.invalidate('passwordConfirmation', 'Passwords do not match.');
+    }
   }
   next();
 });
