@@ -8,6 +8,7 @@ import LeaguesNew from '../leagues/LeaguesNew';
 import LeaguesIndex from '../leagues/LeaguesIndex';
 import LeaguesJoin from '../leagues/LeaguesJoin';
 import LeaguesShow from '../leagues/LeaguesShow';
+import UsersShow from '../users/UsersShow';
 
 const Routes = () => {
   return (
@@ -19,6 +20,7 @@ const Routes = () => {
       <Route path="/leagues/join" component={ LeaguesJoin } />
       <Route path="/leagues/:id" component={ LeaguesShow } />
       <Route path="/leagues" component={ LeaguesIndex } />
+      <Route path="/users/:id" component={ UsersShow } />
     </Switch>
   );
 };

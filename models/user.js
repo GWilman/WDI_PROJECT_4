@@ -12,10 +12,6 @@ const userSchema = new mongoose.Schema({
   timestamps: true
 });
 
-// userSchema
-//   .virtual('hasMadeAPick')
-//   .get()
-
 userSchema
   .virtual('passwordConfirmation')
   .set(function setPasswordConfirmation(passwordConfirmation) {

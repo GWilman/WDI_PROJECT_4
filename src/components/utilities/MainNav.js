@@ -5,7 +5,7 @@ import { LinkContainer } from 'react-router-bootstrap';
 
 import Auth from '../../lib/Auth';
 
-const MainNav = ({ history }) => {
+const MainNav = ({ history, username, userId }) => {
 
   function logout(e) {
     e.preventDefault();
@@ -17,7 +17,9 @@ const MainNav = ({ history }) => {
     <Navbar inverse collapseOnSelect>
       <Navbar.Header>
         <Navbar.Brand>
-          <a href="/">VINCE GRID</a>
+          <LinkContainer exact to="/">
+            <a href="#">VINCE GRID</a>
+          </LinkContainer>
         </Navbar.Brand>
         <Navbar.Toggle />
       </Navbar.Header>
@@ -36,6 +38,11 @@ const MainNav = ({ history }) => {
           { Auth.isAuthenticated() &&
             <LinkContainer exact to="/leagues">
               <NavItem href="#">My Leagues</NavItem>
+            </LinkContainer>
+          }
+          { Auth.isAuthenticated() &&
+            <LinkContainer exact to={`/users/${userId}`}>
+              <NavItem href="#">{username}</NavItem>
             </LinkContainer>
           }
           { Auth.isAuthenticated() &&
