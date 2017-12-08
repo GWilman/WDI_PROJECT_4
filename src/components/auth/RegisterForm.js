@@ -24,7 +24,7 @@ const RegisterForm = ({ handleChange, handleSubmit, user, errors }) => {
               onChange={handleChange}
               value={user.username}
             />
-            { errors.username && <small>{errors.username}</small> }
+            { errors.username && <p><small>{errors.username}</small></p> }
           </Col>
         </FormGroup>
 

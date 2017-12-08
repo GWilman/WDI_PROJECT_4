@@ -9,13 +9,48 @@ class PicksGrid extends React.Component {
     picks: []
   }
 
+  gridStyle = {
+    border: '2px solid black',
+    fontSize: '12px',
+    padding: '0',
+    textAlign: 'center',
+    margin: '0'
+  };
+
+  rowStyle = {
+    borderBottom: '1px solid gray',
+    margin: '0'
+  }
+
+  colStyle = {
+    borderRight: '1px solid gray',
+    height: '70px',
+    padding: '0'
+  }
+
+  endColStyle = {
+    border: 'none',
+    height: '70px',
+    padding: '0'
+  }
+
+  pStyle = {
+    padding: '20% 0',
+    margin: '0 4px'
+  }
+
+  usernameStyle = {
+    lineHeight: '70px',
+    fontWeight: '800'
+  }
+
   componentDidMount() {
     Axios
       .get('/api/picks', {
         params: { league: this.props.match.params.id }
       })
       .then(res => {
-        this.setState({ picks: res.data });
+        this.setState({ picks: res.data }, () => console.log(this.state.picks));
       })
       .catch(err => console.error(err));
   }
@@ -25,76 +60,76 @@ class PicksGrid extends React.Component {
     return (
       <div>
         <h1>The Grid</h1>
-        <Grid>
-          <Row>
-            <Col sm={1}>
-              <p></p>
+        <Grid style={this.gridStyle}>
+          <Row style={this.rowStyle}>
+            <Col sm={2} style={this.colStyle}>
+              <p style={this.pStyle}></p>
             </Col>
-            <Col sm={1}>
-              <p>Champion</p>
+            <Col sm={1} style={this.colStyle}>
+              <p style={this.pStyle}><strong>Champion</strong></p>
             </Col>
-            <Col sm={1}>
-              <p>Runner Up</p>
+            <Col sm={1} style={this.colStyle}>
+              <p style={this.pStyle}><strong>Runner Up</strong></p>
             </Col>
-            <Col sm={1}>
-              <p>Top Scoring Team</p>
+            <Col sm={1} style={this.colStyle}>
+              <p style={this.pStyle}><strong>Top Scoring Team</strong></p>
             </Col>
-            <Col sm={1}>
-              <p>Most Yellows (Team)</p>
+            <Col sm={1} style={this.colStyle}>
+              <p style={this.pStyle}><strong>Most Yellows (Team)</strong></p>
             </Col>
-            <Col sm={1}>
-              <p>Top Scorer</p>
+            <Col sm={1} style={this.colStyle}>
+              <p style={this.pStyle}><strong>Top Scorer</strong></p>
             </Col>
-            <Col sm={1}>
-              <p>Most Assists</p>
+            <Col sm={1} style={this.colStyle}>
+              <p style={this.pStyle}><strong>Most Assists</strong></p>
             </Col>
-            <Col sm={1}>
-              <p>Most Yellows</p>
+            <Col sm={1} style={this.colStyle}>
+              <p style={this.pStyle}><strong>Most Yellows</strong></p>
             </Col>
-            <Col sm={1}>
-              <p>Sent Off</p>
+            <Col sm={1} style={this.colStyle}>
+              <p style={this.pStyle}><strong>Sent Off</strong></p>
             </Col>
-            <Col sm={1}>
-              <p>Man of the Match (Final)</p>
+            <Col sm={1} style={this.colStyle}>
+              <p style={this.pStyle}><strong>MoM (Final)</strong></p>
             </Col>
-            <Col sm={1}>
-              <p>Points</p>
+            <Col sm={1} style={this.endColStyle}>
+              <p style={this.pStyle}><strong>Points</strong></p>
             </Col>
           </Row>
           { this.state.picks.map(pick => {
-            return (<Row key={pick.id}>
-              <Col sm={1}>
-                <p>{pick.createdBy.username}</p>
+            return (<Row key={pick.id} style={this.rowStyle}>
+              <Col sm={2} style={this.colStyle}>
+                <p style={this.usernameStyle}>{pick.createdBy.username}</p>
               </Col>
-              <Col sm={1}>
-                <p>{pick.champion.name}</p>
+              <Col sm={1} style={this.colStyle}>
+                <p style={this.pStyle}>{pick.champion.name}</p>
               </Col>
-              <Col sm={1}>
-                <p>{pick.runnerUp.name}</p>
+              <Col sm={1} style={this.colStyle}>
+                <p style={this.pStyle}>{pick.runnerUp.name}</p>
               </Col>
-              <Col sm={1}>
-                <p>{pick.topScoringTeam.name}</p>
+              <Col sm={1} style={this.colStyle}>
+                <p style={this.pStyle}>{pick.topScoringTeam.name}</p>
               </Col>
-              <Col sm={1}>
-                <p>{pick.mostYellowsTeam.name}</p>
+              <Col sm={1} style={this.colStyle}>
+                <p style={this.pStyle}>{pick.mostYellowsTeam.name}</p>
               </Col>
-              <Col sm={1}>
-                <p>{pick.topScorer.name}</p>
+              <Col sm={1} style={this.colStyle}>
+                <p style={this.pStyle}>{pick.topScorer.name}</p>
               </Col>
-              <Col sm={1}>
-                <p>{pick.mostAssists.name}</p>
+              <Col sm={1} style={this.colStyle}>
+                <p style={this.pStyle}>{pick.mostAssists.name}</p>
               </Col>
-              <Col sm={1}>
-                <p>{pick.mostYellows.name}</p>
+              <Col sm={1} style={this.colStyle}>
+                <p style={this.pStyle}>{pick.mostYellows.name}</p>
               </Col>
-              <Col sm={1}>
-                <p>{pick.sentOff.name}</p>
+              <Col sm={1} style={this.colStyle}>
+                <p style={this.pStyle}>{pick.sentOff.name}</p>
               </Col>
-              <Col sm={1}>
-                <p>{pick.finalMoM.name}</p>
+              <Col sm={1} style={this.colStyle}>
+                <p style={this.pStyle}>{pick.finalMoM.name}</p>
               </Col>
-              <Col sm={1}>
-                <p></p>
+              <Col sm={1} style={this.endColStyle}>
+                <p style={this.pStyle}></p>
               </Col>
             </Row>);
           })}

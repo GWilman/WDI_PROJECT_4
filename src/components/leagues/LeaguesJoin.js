@@ -1,52 +1,50 @@
 import React from 'react';
 import Axios from 'axios';
-// import { Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import Promise from 'bluebird';
 // import _ from 'lodash';
 
 import Auth from '../../lib/Auth';
 
 class LeaguesIndex extends React.Component {
   state = {
-    leagues: [],
+    leagues: null,
     user: {}
   }
 
   componentDidMount() {
-    Axios
-      .get('/api/leagues')
-      .then(res => this.setState({ leagues: res.data }))
-      .catch(err => console.error(err));
 
-    const userId = Auth.getPayload();
-    Axios
-      .get(`/api/users/${userId.userId}`)
-      .then(res => this.setState({ user: res.data }))
-      .catch(err => console.error(err));
+    const { userId } = Auth.getPayload();
+    const promises = {
+      leagues: Axios.get('/api/leagues').then(res => res.data),
+      user: Axios.get(`/api/users/${userId}`).then(res => res.data)
+    };
 
+    Promise.props(promises)
+      .then(data => this.setState(data))
+      .catch(err => console.error(err));
   }
 
-  joinLeague = (e) => {
-    const leagueId = e.target.id;
-    const userId = Auth.getPayload();
-    this.state.user.leagues.push(leagueId);
-    // this.setState({ leagues: leagueId })
+  joinLeague = ({ target: { id }}) => {
+
+    const leagues = this.state.user.leagues.concat(id);
+    const user = Object.assign({}, this.state.user, { leagues });
+
     Axios
-      .put(`/api/users/${userId.userId}`, this.state.user)
+      .put(`/api/users/${this.state.user.id}`, user)
       .then(() => {
-        document.getElementById(leagueId).setAttribute('disabled', 'true');
-        document.getElementById(leagueId).innerHTML = 'Joined';
+        this.props.history.push(`/leagues/${id}`);
       })
       .catch(err => console.error(err));
   }
 
   render() {
-    console.log(this.state.user);
-    // const userLeagues = this.state.user.leagues.map(league => league.id);
-    // console.log(userLeagues);
+    if(!this.state.leagues) return null;
+    const filteredLeagues = this.state.leagues.filter(league => !(league.users.find(user => user.id === this.state.user.id)));
     return (
       <div>
         <h1>Join a League</h1>
-        { this.state.leagues.map(league =>
+        { filteredLeagues.map(league =>
           <div key={league.id} className="league-container">
             <h3>{league.name}</h3>
             <p>Stake: <strong>£{league.stake}</strong></p>
@@ -56,6 +54,9 @@ class LeaguesIndex extends React.Component {
             <button onClick={this.joinLeague} id={league.id} className="btn btn-success">Join</button>
           </div>
         )}
+        { filteredLeagues.length === 0 &&
+          <h2>There are currently no leagues for you to join. Why not <Link to="/leagues/new">create a new league</Link>?</h2>
+        }
       </div>
     );
   }

@@ -10,37 +10,28 @@ import PicksGrid from './PicksGrid.js';
 
 class LeaguesShow extends React.Component {
   state = {
-    league: {},
+    league: null,
     hasMadePick: false
   }
 
 
   componentDidMount() {
-    console.log('componentDidMount');
     Axios
       .get(`/api/leagues/${this.props.match.params.id}`)
       .then(res => {
-        console.log('setting state first time');
-        this.setState({ league: res.data });
-      })
-      .then(() => {
-        console.log('checking if user made picks or not');
-        const userId = Auth.getPayload();
-        for (let i = 0; i < this.state.league.picks.length; i++) {
-          if (this.state.league.picks[i].createdBy === userId.userId) {
-            this.setState({ hasMadePick: true });
-          }
-        }
+        const { userId } = Auth.getPayload();
+        const hasMadePick = !!res.data.picks.find(pick => pick.createdBy === userId);
+        this.setState({ hasMadePick, league: res.data });
       })
       .catch(err => console.error(err));
   }
 
   render() {
-    console.log('rendering');
+    if(!this.state.league) return null;
     return (
       <div>
         <h1>{this.state.league.name}</h1>
-        <h3>Stake: £{this.state.league.stake}</h3>
+        <h3>Stake: £{this.state.league.stake} | Owner: {this.state.league.createdBy.username}</h3>
         { !this.state.hasMadePick ? (
           <Picker />
         ) : (

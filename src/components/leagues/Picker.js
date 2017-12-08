@@ -2,7 +2,7 @@ import React from 'react';
 import Axios from 'axios';
 import { withRouter } from 'react-router-dom';
 
-import { Form, FormGroup, ControlLabel, Button } from 'react-bootstrap';
+import { Form, FormGroup, ControlLabel, Button, Row, Col } from 'react-bootstrap';
 import Autosuggest from 'react-bootstrap-autosuggest';
 
 import Auth from '../../lib/Auth';
@@ -32,32 +32,17 @@ class Picker extends React.Component {
       .catch(err => console.error(err));
   }
 
-  handleChange = (e) => {
-    const inputs = document.querySelectorAll('input');
-    let selectedInput = null;
-    for (var i = 0; i < inputs.length; i++) {
-      if (inputs[i].value === e) {
-        selectedInput = inputs[i];
-      }
+  handleChange = (value, name, type) => {
+    if(!value) return false;
+    const { teams, players } = this.state;
+    if(type === 'team') {
+      value = teams.find(team => team.name === value).id;
+    } else {
+      value = players.find(player => player.name === value).id;
     }
 
-    const name = selectedInput.name;
-    let value = selectedInput.value;
-
-    this.state.teams.forEach(team => {
-      if (team.name === value) {
-        value = team.id;
-      }
-    });
-
-    this.state.players.forEach(player => {
-      if (player.name === value) {
-        value = player.id;
-      }
-    });
-
     const picks = Object.assign({}, this.state.picks, { [name]: value });
-    this.setState({ picks });
+    this.setState({ picks }, () => console.log(this.state.picks));
   }
 
   handleSubmit = (e) => {
@@ -70,6 +55,10 @@ class Picker extends React.Component {
       .catch(err => console.error(err));
   }
 
+  h3Style = {
+    marginTop: '10px'
+  }
+
   render() {
     const teamNames = this.state.teams.map(team => team.name);
     const playerNames = this.state.players.map(player => player.name);
@@ -77,116 +66,137 @@ class Picker extends React.Component {
       <div>
         <h2>Make Your Picks for the Champions League Knockout Stages 2018</h2>
         <Form onSubmit={this.handleSubmit}>
-          <ControlLabel>#1: Champions</ControlLabel>
-          <FormGroup controlId="winningTeamInput">
-            <Autosuggest
-              datalist={teamNames}
-              placeholder="Pick a team"
-              name="champion"
-              id="champion"
-              value=''
-              onBlur={this.handleChange}
-            />
-          </FormGroup>
+          <Row>
+            <Col sm={6}>
+              <ControlLabel>#1: Champions</ControlLabel>
+              <FormGroup controlId="winningTeamInput">
+                <Autosuggest
+                  datalist={teamNames}
+                  required
+                  placeholder="Pick a team"
+                  name="champion"
+                  id="champion"
+                  value=''
+                  onBlur={(value) => this.handleChange(value, 'champion', 'team')}
+                />
+              </FormGroup>
 
-          <ControlLabel>#2: Runner Up</ControlLabel>
-          <FormGroup controlId="runnerUpInput">
-            <Autosuggest
-              datalist={teamNames}
-              placeholder="Pick a team"
-              name="runnerUp"
-              id="runnerUp"
-              value=""
-              onBlur={this.handleChange}
-            />
-          </FormGroup>
+              <ControlLabel>#2: Runner Up</ControlLabel>
+              <FormGroup controlId="runnerUpInput">
+                <Autosuggest
+                  datalist={teamNames}
+                  required
+                  placeholder="Pick a team"
+                  name="runnerUp"
+                  id="runnerUp"
+                  value=""
+                  onBlur={(value) => this.handleChange(value, 'runnerUp', 'team')}
+                />
+              </FormGroup>
 
-          <ControlLabel>#3: Top Scoring Team</ControlLabel>
-          <FormGroup controlId="topScoringTeamInput">
-            <Autosuggest
-              datalist={teamNames}
-              placeholder="Pick a team"
-              name="topScoringTeam"
-              id="topScoringTeam"
-              value=""
-              onBlur={this.handleChange}
-            />
-          </FormGroup>
+              <ControlLabel>#3: Top Scoring Team</ControlLabel>
+              <FormGroup controlId="topScoringTeamInput">
+                <Autosuggest
+                  datalist={teamNames}
+                  required
+                  placeholder="Pick a team"
+                  name="topScoringTeam"
+                  id="topScoringTeam"
+                  value=""
+                  onBlur={(value) => this.handleChange(value, 'topScoringTeam', 'team')}
+                />
+              </FormGroup>
 
-          <ControlLabel>#4: Most Yellow Cards (Team)</ControlLabel>
-          <FormGroup controlId="mostYellowsTeamInput">
-            <Autosuggest
-              datalist={teamNames}
-              placeholder="Pick a team"
-              name="mostYellowsTeam"
-              id="mostYellowsTeam"
-              value=""
-              onBlur={this.handleChange}
-            />
-          </FormGroup>
+              <ControlLabel>#4: Most Yellow Cards (Team)</ControlLabel>
+              <FormGroup controlId="mostYellowsTeamInput">
+                <Autosuggest
+                  datalist={teamNames}
+                  required
+                  placeholder="Pick a team"
+                  name="mostYellowsTeam"
+                  id="mostYellowsTeam"
+                  value=""
+                  onBlur={(value) => this.handleChange(value, 'mostYellowsTeam', 'team')}
+                />
+              </FormGroup>
+            </Col>
 
-          <ControlLabel>#5: Top Scorer</ControlLabel>
-          <FormGroup controlId="topScorerInput">
-            <Autosuggest
-              datalist={playerNames}
-              placeholder="Pick a player"
-              name="topScorer"
-              id="topScorer"
-              value=""
-              onBlur={this.handleChange}
-            />
-          </FormGroup>
+            <Col sm={6}>
+              <ControlLabel>#5: Top Scorer</ControlLabel>
+              <FormGroup controlId="topScorerInput">
+                <Autosuggest
+                  datalist={playerNames}
+                  required
+                  placeholder="Pick a player"
+                  name="topScorer"
+                  id="topScorer"
+                  value=""
+                  onBlur={(value) => this.handleChange(value, 'topScorer', 'player')}
+                />
+              </FormGroup>
 
-          <ControlLabel>#6: Most Assists</ControlLabel>
-          <FormGroup controlId="mostAssistsInput">
-            <Autosuggest
-              datalist={playerNames}
-              placeholder="Pick a player"
-              name="mostAssists"
-              id="mostAssists"
-              value=""
-              onBlur={this.handleChange}
-            />
-          </FormGroup>
+              <ControlLabel>#6: Most Assists</ControlLabel>
+              <FormGroup controlId="mostAssistsInput">
+                <Autosuggest
+                  datalist={playerNames}
+                  required
+                  placeholder="Pick a player"
+                  name="mostAssists"
+                  id="mostAssists"
+                  value=""
+                  onBlur={(value) => this.handleChange(value, 'mostAssists', 'player')}
+                />
+              </FormGroup>
 
-          <ControlLabel>#6: Most Yellow Cards</ControlLabel>
-          <FormGroup controlId="mostYellowsInput">
-            <Autosuggest
-              datalist={playerNames}
-              placeholder="Pick a player"
-              name="mostYellows"
-              id="mostYellows"
-              value=""
-              onBlur={this.handleChange}
-            />
-          </FormGroup>
+              <ControlLabel>#7: Most Yellow Cards</ControlLabel>
+              <FormGroup controlId="mostYellowsInput">
+                <Autosuggest
+                  datalist={playerNames}
+                  required
+                  placeholder="Pick a player"
+                  name="mostYellows"
+                  id="mostYellows"
+                  value=""
+                  onBlur={(value) => this.handleChange(value, 'mostYellows', 'player')}
+                />
+              </FormGroup>
+            </Col>
+          </Row>
 
-          <h3>Bonus!</h3>
-          <p>Score 20 bonus points for each of these you pick correctly.</p>
+          <hr />
 
-          <ControlLabel>Player to be Sent Off</ControlLabel>
-          <FormGroup controlId="sentOffInput">
-            <Autosuggest
-              datalist={playerNames}
-              placeholder="Pick a player"
-              name="sentOff"
-              id="sentOff"
-              value=""
-              onBlur={this.handleChange}
-            />
-          </FormGroup>
+          <Row>
+            <Col sm={8}>
+              <h3 style={this.h3Style}>Bonus!</h3>
+              <p>Score 20 bonus points for each of these you pick correctly.</p>
 
-          <ControlLabel>Cup Final: Man of the Match</ControlLabel>
-          <FormGroup controlId="finalMoMInput">
-            <Autosuggest
-              datalist={playerNames}
-              placeholder="Pick a player"
-              name="finalMoM"
-              id="finalMoM"
-              value=""
-              onBlur={this.handleChange}
-            />
-          </FormGroup>
+              <ControlLabel>Player to be Sent Off</ControlLabel>
+              <FormGroup controlId="sentOffInput">
+                <Autosuggest
+                  datalist={playerNames}
+                  required
+                  placeholder="Pick a player"
+                  name="sentOff"
+                  id="sentOff"
+                  value=""
+                  onBlur={(value) => this.handleChange(value, 'sentOff', 'player')}
+                />
+              </FormGroup>
+
+              <ControlLabel>Cup Final: Man of the Match</ControlLabel>
+              <FormGroup controlId="finalMoMInput">
+                <Autosuggest
+                  datalist={playerNames}
+                  required
+                  placeholder="Pick a player"
+                  name="finalMoM"
+                  id="finalMoM"
+                  value=""
+                  onBlur={(value) => this.handleChange(value, 'finalMoM', 'player')}
+                />
+              </FormGroup>
+            </Col>
+          </Row>
 
           <Button type="submit">
             Submit Picks
