@@ -1,7 +1,7 @@
 import React from 'react';
 import Axios from 'axios';
+import Promise from 'bluebird';
 import { withRouter } from 'react-router-dom';
-
 import { Form, FormGroup, ControlLabel, Button, Row, Col } from 'react-bootstrap';
 import Autosuggest from 'react-bootstrap-autosuggest';
 
@@ -17,18 +17,13 @@ class Picker extends React.Component {
   }
 
   componentDidMount() {
-    Axios
-      .get('/api/teams')
-      .then(res => {
-        this.setState({ teams: res.data });
-      })
-      .catch(err => console.error(err));
+    const promises = {
+      teams: Axios.get('/api/teams').then(res => res.data),
+      players: Axios.get('/api/players').then(res => res.data)
+    };
 
-    Axios
-      .get('/api/players')
-      .then(res => {
-        this.setState({ players: res.data });
-      })
+    Promise.props(promises)
+      .then(data => this.setState(data))
       .catch(err => console.error(err));
   }
 
