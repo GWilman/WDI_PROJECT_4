@@ -16,11 +16,13 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    const { userId } = Auth.getPayload();
-    Axios
-      .get(`/api/users/${userId}`)
-      .then(res => this.setState({ user: res.data }))
-      .catch(err => console.error(err));
+    if (Auth.getPayload()) {
+      const { userId } = Auth.getPayload();
+      Axios
+        .get(`/api/users/${userId}`)
+        .then(res => this.setState({ user: res.data }))
+        .catch(err => console.error(err));
+    }
   }
 
   navImage = {
