@@ -11,8 +11,17 @@ class LeaguesNew extends React.Component {
       stake: '',
       code: null
     },
+    user: {},
     errors: {}
   };
+
+  componentDidMount() {
+    const { userId } = Auth.getPayload();
+    Axios
+      .get(`/api/users/${userId}`)
+      .then(res => this.setState({ user: res.data }))
+      .catch(err => console.error(err));
+  }
 
   handleChange = ({ target: { name, value } }) => {
     const league = Object.assign({}, this.state.league, { [name]: value });
@@ -24,16 +33,24 @@ class LeaguesNew extends React.Component {
     e.preventDefault();
 
     const code = (Math.floor(Math.random() * 10000) + 10000).toString().substring(1);
-    const league = Object.assign({}, this.state.league, { code: parseFloat(code) });
+    const league = Object.assign({}, this.state.league, { code: parseInt(code) });
+    console.log(league);
 
     Axios
       .post('/api/leagues', league, {
         headers: {'Authorization': `Bearer ${Auth.getToken()}`}
       })
-      .then(() => this.props.history.push('/'))
-      .catch(err => {
-        this.setState({ errors: err.response.data.errors });
-      });
+      .then(league => {
+        const leagues = this.state.user.leagues.concat(league.data.id);
+        const user = Object.assign({}, this.state.user, { leagues });
+        Axios
+          .put(`/api/users/${this.state.user.id}`, user)
+          .then(() => {
+            this.props.history.push(`/leagues/${league.data.id}`);
+          });
+      })
+      .catch(err => this.setState({ errors: err.response.data.errors }));
+
   }
 
   render() {
