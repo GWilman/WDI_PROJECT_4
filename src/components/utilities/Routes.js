@@ -8,6 +8,7 @@ import LeaguesNew from '../leagues/LeaguesNew';
 import LeaguesIndex from '../leagues/LeaguesIndex';
 import LeaguesJoin from '../leagues/LeaguesJoin';
 import LeaguesShow from '../leagues/LeaguesShow';
+import ScoreUpdate from '../leagues/ScoreUpdate';
 import UsersShow from '../users/UsersShow';
 
 const Routes = () => {
@@ -18,6 +19,7 @@ const Routes = () => {
       <Route path="/register" component={ Register } />
       <Route path="/leagues/new" component={ LeaguesNew } />
       <Route path="/leagues/join" component={ LeaguesJoin } />
+      <Route path="/leagues/:id/scores" component={ ScoreUpdate } />
       <Route path="/leagues/:id" component={ LeaguesShow } />
       <Route path="/leagues" component={ LeaguesIndex } />
       <Route path="/users/:id" component={ UsersShow } />

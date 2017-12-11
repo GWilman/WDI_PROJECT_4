@@ -42,7 +42,7 @@ class Picker extends React.Component {
     }
 
     const picks = Object.assign({}, this.state.picks, { [name]: value });
-    this.setState({ picks }, () => console.log(this.state.picks));
+    this.setState({ picks });
   }
 
   handleSubmit = (e) => {
@@ -51,7 +51,7 @@ class Picker extends React.Component {
       .post('/api/picks', this.state.picks, {
         headers: {'Authorization': `Bearer ${Auth.getToken()}`}
       })
-      .then()
+      .then(() => this.props.history.push(`/leagues/${this.props.match.params.id}`))
       .catch(err => console.error(err));
   }
 

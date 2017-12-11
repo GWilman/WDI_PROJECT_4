@@ -11,9 +11,24 @@ const pickSchema = new mongoose.Schema({
   mostAssists: { type: mongoose.Schema.ObjectId, ref: 'Player' },
   mostYellows: { type: mongoose.Schema.ObjectId, ref: 'Player' },
   sentOff: { type: mongoose.Schema.ObjectId, ref: 'Player' },
-  finalMoM: { type: mongoose.Schema.ObjectId, ref: 'Player' }
+  finalMoM: { type: mongoose.Schema.ObjectId, ref: 'Player' },
+  championPoints: { type: Number, default: undefined },
+  runnerUpPoints: { type: Number, default: undefined },
+  topScoringTeamPoints: { type: Number, default: undefined },
+  mostYellowsTeamPoints: { type: Number, default: undefined },
+  topScorerPoints: { type: Number, default: undefined },
+  mostAssistsPoints: { type: Number, default: undefined },
+  mostYellowsPoints: { type: Number, default: undefined },
+  sentOffPoints: { type: Number, default: undefined },
+  finalMoMPoints: { type: Number, default: undefined }
 }, {
   timestamps: true
 });
+
+pickSchema
+  .virtual('totalPoints')
+  .get(function() {
+    return (this.championPoints + this.runnerUpPoints + this.topScoringTeamPoints + this.mostYellowsTeamPoints + this.topScorerPoints + this.mostAssistsPoints + this.mostYellowsPoints + this.sentOffPoints + this.finalMoMPoints);
+  });
 
 module.exports = mongoose.model('Pick', pickSchema);

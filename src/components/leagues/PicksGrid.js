@@ -1,12 +1,15 @@
 import React from 'react';
 import Axios from 'axios';
-import { withRouter } from 'react-router-dom';
-
+import { Link, withRouter } from 'react-router-dom';
 import { Grid, Row, Col } from 'react-bootstrap';
+import _ from 'lodash';
+
+import Auth from '../../lib/Auth';
 
 class PicksGrid extends React.Component {
   state = {
-    picks: []
+    picks: [],
+    isOwned: false
   }
 
   gridStyle = {
@@ -50,86 +53,95 @@ class PicksGrid extends React.Component {
         params: { league: this.props.match.params.id }
       })
       .then(res => {
-        this.setState({ picks: res.data }, () => console.log(this.state.picks));
+        const { userId } = Auth.getPayload();
+        let isOwned = false;
+        if (userId === res.data[0].league.createdBy) isOwned = true;
+        this.setState({ picks: res.data, isOwned: isOwned });
       })
       .catch(err => console.error(err));
   }
 
 
   render() {
+    const orderedPicks = _.orderBy(this.state.picks, ['totalPoints'], ['desc']);
     return (
       <div>
         <h1>The Grid</h1>
+        { this.state.isOwned &&
+          <Link to={`/leagues/${this.props.match.params.id}/scores`}>
+            <button className="btn btn-primary">Update Scores</button>
+          </Link>
+        }
         <Grid style={this.gridStyle}>
           <Row style={this.rowStyle}>
-            <Col sm={2} style={this.colStyle}>
+            <Col xs={2} style={this.colStyle}>
               <p style={this.pStyle}></p>
             </Col>
-            <Col sm={1} style={this.colStyle}>
+            <Col xs={1} style={this.colStyle}>
               <p style={this.pStyle}><strong>Champion</strong></p>
             </Col>
-            <Col sm={1} style={this.colStyle}>
+            <Col xs={1} style={this.colStyle}>
               <p style={this.pStyle}><strong>Runner Up</strong></p>
             </Col>
-            <Col sm={1} style={this.colStyle}>
+            <Col xs={1} style={this.colStyle}>
               <p style={this.pStyle}><strong>Top Scoring Team</strong></p>
             </Col>
-            <Col sm={1} style={this.colStyle}>
+            <Col xs={1} style={this.colStyle}>
               <p style={this.pStyle}><strong>Most Yellows (Team)</strong></p>
             </Col>
-            <Col sm={1} style={this.colStyle}>
+            <Col xs={1} style={this.colStyle}>
               <p style={this.pStyle}><strong>Top Scorer</strong></p>
             </Col>
-            <Col sm={1} style={this.colStyle}>
+            <Col xs={1} style={this.colStyle}>
               <p style={this.pStyle}><strong>Most Assists</strong></p>
             </Col>
-            <Col sm={1} style={this.colStyle}>
+            <Col xs={1} style={this.colStyle}>
               <p style={this.pStyle}><strong>Most Yellows</strong></p>
             </Col>
-            <Col sm={1} style={this.colStyle}>
+            <Col xs={1} style={this.colStyle}>
               <p style={this.pStyle}><strong>Sent Off</strong></p>
             </Col>
-            <Col sm={1} style={this.colStyle}>
+            <Col xs={1} style={this.colStyle}>
               <p style={this.pStyle}><strong>MoM (Final)</strong></p>
             </Col>
-            <Col sm={1} style={this.endColStyle}>
+            <Col xs={1} style={this.endColStyle}>
               <p style={this.pStyle}><strong>Points</strong></p>
             </Col>
           </Row>
-          { this.state.picks.map(pick => {
+          { orderedPicks.map(pick => {
             return (<Row key={pick.id} style={this.rowStyle}>
-              <Col sm={2} style={this.colStyle}>
+              <Col xs={2} style={this.colStyle}>
                 <p style={this.usernameStyle}>{pick.createdBy.username}</p>
               </Col>
-              <Col sm={1} style={this.colStyle}>
-                <p style={this.pStyle}>{pick.champion.name}</p>
+              <Col xs={1} style={this.colStyle}>
+                <p>{pick.championPoints}<br />{pick.champion.name}</p>
               </Col>
-              <Col sm={1} style={this.colStyle}>
-                <p style={this.pStyle}>{pick.runnerUp.name}</p>
+              <Col xs={1} style={this.colStyle}>
+                <p>{pick.runnerUpPoints}<br />{pick.runnerUp.name}</p>
               </Col>
-              <Col sm={1} style={this.colStyle}>
-                <p style={this.pStyle}>{pick.topScoringTeam.name}</p>
+              <Col xs={1} style={this.colStyle}>
+                <p>{pick.topScoringTeamPoints}<br />{pick.topScoringTeam.name}</p>
               </Col>
-              <Col sm={1} style={this.colStyle}>
-                <p style={this.pStyle}>{pick.mostYellowsTeam.name}</p>
+              <Col xs={1} style={this.colStyle}>
+                <p>{pick.mostYellowsTeamPoints}<br />{pick.mostYellowsTeam.name}</p>
               </Col>
-              <Col sm={1} style={this.colStyle}>
-                <p style={this.pStyle}>{pick.topScorer.name}</p>
+              <Col xs={1} style={this.colStyle}>
+                <p>{pick.topScorerPoints}<br />{pick.topScorer.name}</p>
               </Col>
-              <Col sm={1} style={this.colStyle}>
-                <p style={this.pStyle}>{pick.mostAssists.name}</p>
+              <Col xs={1} style={this.colStyle}>
+                <p>{pick.mostAssistsPoints}<br />{pick.mostAssists.name}</p>
               </Col>
-              <Col sm={1} style={this.colStyle}>
-                <p style={this.pStyle}>{pick.mostYellows.name}</p>
+              <Col xs={1} style={this.colStyle}>
+                <p>{pick.mostYellowsPoints}<br />{pick.mostYellows.name}</p>
               </Col>
-              <Col sm={1} style={this.colStyle}>
-                <p style={this.pStyle}>{pick.sentOff.name}</p>
+              <Col xs={1} style={this.colStyle}>
+                <p>{pick.sentOffPoints}<br />{pick.sentOff.name}</p>
               </Col>
-              <Col sm={1} style={this.colStyle}>
-                <p style={this.pStyle}>{pick.finalMoM.name}</p>
+              <Col xs={1} style={this.colStyle}>
+                <p>{pick.finalMoMPoints}<br />{pick.finalMoM.name}</p>
               </Col>
-              <Col sm={1} style={this.endColStyle}>
-                <p style={this.pStyle}></p>
+              <Col xs={1} style={this.endColStyle}>
+                <p><strong>{pick.totalPoints}</strong></p>
               </Col>
             </Row>);
           })}

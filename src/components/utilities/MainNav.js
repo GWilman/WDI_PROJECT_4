@@ -5,7 +5,7 @@ import { LinkContainer } from 'react-router-bootstrap';
 
 import Auth from '../../lib/Auth';
 
-const MainNav = ({ history, username, userId }) => {
+const MainNav = ({ history, username, userId, image, navImage }) => {
 
   function logout(e) {
     e.preventDefault();
@@ -42,7 +42,11 @@ const MainNav = ({ history, username, userId }) => {
           }
           { Auth.isAuthenticated() &&
             <LinkContainer exact to={`/users/${userId}`}>
-              <NavItem href="#">{username}</NavItem>
+              <NavItem href="#">{username}&nbsp;&nbsp;
+                { image &&
+                  <img src={image} style={navImage} />
+                }
+              </NavItem>
             </LinkContainer>
           }
           { Auth.isAuthenticated() &&

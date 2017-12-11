@@ -9,7 +9,8 @@ import Auth from '../../lib/Auth';
 class LeaguesIndex extends React.Component {
   state = {
     leagues: null,
-    user: {}
+    user: {},
+    entryCode: ''
   }
 
   componentDidMount() {
@@ -23,6 +24,10 @@ class LeaguesIndex extends React.Component {
     Promise.props(promises)
       .then(data => this.setState(data))
       .catch(err => console.error(err));
+  }
+
+  handleChange = ({ target: { value } }) => {
+    this.setState({ entryCode: value });
   }
 
   joinLeague = ({ target: { id }}) => {
@@ -51,6 +56,7 @@ class LeaguesIndex extends React.Component {
             { league.createdBy &&
             <p>Owner: <strong>{league.createdBy.username}</strong></p>
             }
+            <input type="text" value={this.state.entryCode} placeholder="Enter code" onChange={this.handleChange} />
             <button onClick={this.joinLeague} id={league.id} className="btn btn-success">Join</button>
           </div>
         )}

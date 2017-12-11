@@ -23,6 +23,12 @@ class App extends React.Component {
       .catch(err => console.error(err));
   }
 
+  navImage = {
+    height: '20px',
+    width: '20px',
+    borderRadius: '100%'
+  }
+
   render() {
     return (
       <Router>
@@ -31,6 +37,8 @@ class App extends React.Component {
             <MainNav
               username={this.state.user.username}
               userId={this.state.user.id}
+              image={this.state.user.image}
+              navImage={this.navImage}
             />
           }
           <main className="container">
