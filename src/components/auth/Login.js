@@ -26,6 +26,7 @@ class Login extends React.Component {
       .post('/api/login', this.state.user)
       .then(res => {
         Auth.setToken(res.data.token);
+        this.props.setUser(res.data.user);
         this.props.history.push('/');
       })
       .catch(err => {

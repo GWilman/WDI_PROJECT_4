@@ -29,6 +29,7 @@ class Register extends React.Component {
       .post('/api/register', this.state.user)
       .then(res => {
         Auth.setToken(res.data.token);
+        this.props.setUser(res.data.user);
         this.props.history.push('/');
       })
       .catch(err => this.setState({ errors: err.response.data.errors }));

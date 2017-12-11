@@ -29,6 +29,8 @@ class App extends React.Component {
     borderRadius: '100%'
   }
 
+  setUser = user => this.setState({ user });
+
   render() {
     return (
       <Router>
@@ -42,7 +44,7 @@ class App extends React.Component {
             />
           }
           <main className="container">
-            <Routes />
+            <Routes setUser={this.setUser} />
           </main>
         </div>
       </Router>

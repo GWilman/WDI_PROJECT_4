@@ -10,7 +10,8 @@ class LeaguesIndex extends React.Component {
   state = {
     leagues: null,
     user: {},
-    entryCode: ''
+    entryCode: '',
+    error: false
   }
 
   componentDidMount() {
@@ -27,20 +28,34 @@ class LeaguesIndex extends React.Component {
   }
 
   handleChange = ({ target: { value } }) => {
-    this.setState({ entryCode: value });
+    this.setState({ entryCode: parseInt(value) });
   }
 
-  joinLeague = ({ target: { id }}) => {
+  joinLeague = (league) => {
 
-    const leagues = this.state.user.leagues.concat(id);
-    const user = Object.assign({}, this.state.user, { leagues });
+    const code = this.state.leagues.find(_league => _league.id === league.id).code;
 
-    Axios
-      .put(`/api/users/${this.state.user.id}`, user)
-      .then(() => {
-        this.props.history.push(`/leagues/${id}`);
-      })
-      .catch(err => console.error(err));
+    if (this.state.entryCode !== code) {
+      league = Object.assign({}, league, { error: true });
+      const index = this.state.leagues.findIndex(_league => _league.id === league.id);
+      const leagues = [
+        ...this.state.leagues.slice(0, index),
+        league,
+        ...this.state.leagues.slice(index+1)
+      ];
+      this.setState({ leagues });
+    } else {
+      const leagues = this.state.user.leagues.concat(league.id);
+      const user = Object.assign({}, this.state.user, { leagues });
+
+      Axios
+        .put(`/api/users/${this.state.user.id}`, user)
+        .then(() => {
+          this.props.history.push(`/leagues/${league.id}`);
+        })
+        .catch(err => console.error(err));
+
+    }
   }
 
   render() {
@@ -56,8 +71,9 @@ class LeaguesIndex extends React.Component {
             { league.createdBy &&
             <p>Owner: <strong>{league.createdBy.username}</strong></p>
             }
-            <input type="text" value={this.state.entryCode} placeholder="Enter code" onChange={this.handleChange} />
-            <button onClick={this.joinLeague} id={league.id} className="btn btn-success">Join</button>
+            <input type="text" value={league.entryCode} placeholder="Enter code" onChange={this.handleChange} />
+            <button onClick={() => this.joinLeague(league)} className="btn btn-success">Join</button><br />
+            { league.error && <small>Invalid code</small>}
           </div>
         )}
         { filteredLeagues.length === 0 &&
