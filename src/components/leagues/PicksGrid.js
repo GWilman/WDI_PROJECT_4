@@ -124,7 +124,6 @@ class PicksGrid extends React.Component {
     const orderedPicks = _.orderBy(this.state.picks, ['totalPoints'], ['desc']);
     return (
       <div>
-        <h1>The Grid</h1>
         { this.state.isOwned && !this.state.updating &&
           <button className="btn btn-primary" onClick={this.update}>Update Scores</button>
         }
