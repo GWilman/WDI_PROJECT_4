@@ -34,15 +34,16 @@ class LeaguesNew extends React.Component {
 
     const code = (Math.floor(Math.random() * 10000) + 10000).toString().substring(1);
     const league = Object.assign({}, this.state.league, { code: parseInt(code) });
-    console.log(league);
 
     Axios
       .post('/api/leagues', league, {
         headers: {'Authorization': `Bearer ${Auth.getToken()}`}
       })
       .then(league => {
+
         const leagues = this.state.user.leagues.concat(league.data.id);
         const user = Object.assign({}, this.state.user, { leagues });
+        
         Axios
           .put(`/api/users/${this.state.user.id}`, user)
           .then(() => {

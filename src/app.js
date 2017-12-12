@@ -5,6 +5,8 @@ import Axios from 'axios';
 
 import 'bootstrap-css-only';
 
+import './scss/style.scss';
+
 import Auth from './lib/Auth';
 
 import MainNav from './components/utilities/MainNav';
@@ -37,14 +39,12 @@ class App extends React.Component {
     return (
       <Router>
         <div>
-          { this.state.user.username &&
-            <MainNav
-              username={this.state.user.username}
-              userId={this.state.user.id}
-              image={this.state.user.image}
-              navImage={this.navImage}
-            />
-          }
+          <MainNav
+            username={this.state.user.username}
+            userId={this.state.user.id}
+            image={this.state.user.image}
+            navImage={this.navImage}
+          />
           <main className="container">
             <Routes setUser={this.setUser} />
           </main>

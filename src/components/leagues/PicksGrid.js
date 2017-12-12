@@ -97,8 +97,6 @@ class PicksGrid extends React.Component {
         finalMoM: this.state.picks[i].finalMoM.id
       });
 
-      console.log('to send:', updatePick);
-
       Axios
         .put(`/api/picks/${ids[i]}`, updatePick, {
           headers: {'Authorization': `Bearer ${Auth.getToken()}`}

@@ -5,16 +5,16 @@ import Axios from 'axios';
 
 import Auth from '../../lib/Auth';
 
-import Picker from './Picker.js';
+// import Picker from './Picker.js';
 import LiveDraft from './LiveDraft.js';
 import PicksGrid from './PicksGrid.js';
 
 class LeaguesShow extends React.Component {
   state = {
     league: null,
+    isOwned: false,
     hasMadePick: false
   }
-
 
   componentDidMount() {
     Axios
@@ -22,8 +22,19 @@ class LeaguesShow extends React.Component {
       .then(res => {
         const { userId } = Auth.getPayload();
         const hasMadePick = !!res.data.picks.find(pick => pick.createdBy === userId);
-        this.setState({ hasMadePick, league: res.data });
+        let isOwned = false;
+        if (userId === res.data.createdBy.id) isOwned = true;
+        this.setState({ hasMadePick, league: res.data, isOwned: isOwned });
       })
+      .catch(err => console.error(err));
+  }
+
+  deleteLeague() {
+    Axios
+      .delete(`/api/leagues/${this.props.match.params.id}`, {
+        headers: { 'Authorization': `Bearer ${Auth.getToken()}` }
+      })
+      .then(() => this.props.history.push('/leagues'))
       .catch(err => console.error(err));
   }
 
@@ -33,6 +44,9 @@ class LeaguesShow extends React.Component {
       <div>
         <h1>{this.state.league.name}</h1>
         <h3>Stake: £{this.state.league.stake} | Owner: {this.state.league.createdBy.username} | Entry Code: {this.state.league.code}</h3>
+        { this.state.isOwned &&
+          <button className="btn btn-primary" onClick={this.deleteLeague.bind(this)}>Delete League</button>
+        }
         <h4>How to score:</h4>
         <p>1st: 25 points | 2nd: 18 points | 3rd: 15 points | 4th: 10 points | 5th: 5 points | 6th: 0 points</p>
         <p>In the event of a tie, the sum of the position scores is divided by the number of players in a tie.</p>

@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const leagueSchema = new mongoose.Schema({
   name: { type: String, required: 'A league name is required.' },
-  stake: { type: Number, required: true },
+  stake: { type: Number, required: 'Stake is required. Enter 0 if playing for pride is enough.' },
   createdBy: { type: mongoose.Schema.ObjectId, ref: 'User' },
   code: { type: Number, required: true }
 }, {

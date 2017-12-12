@@ -1,8 +1,8 @@
 import React from 'react';
 import Axios from 'axios';
 import { Link } from 'react-router-dom';
+import { Form } from 'react-bootstrap';
 import Promise from 'bluebird';
-// import _ from 'lodash';
 
 import Auth from '../../lib/Auth';
 
@@ -31,8 +31,8 @@ class LeaguesIndex extends React.Component {
     this.setState({ entryCode: parseInt(value) });
   }
 
-  joinLeague = (league) => {
-
+  joinLeague = (league, e) => {
+    e.preventDefault();
     const code = this.state.leagues.find(_league => _league.id === league.id).code;
 
     if (this.state.entryCode !== code) {
@@ -71,9 +71,11 @@ class LeaguesIndex extends React.Component {
             { league.createdBy &&
             <p>Owner: <strong>{league.createdBy.username}</strong></p>
             }
-            <input type="text" value={league.entryCode} placeholder="Enter code" onChange={this.handleChange} />
-            <button onClick={() => this.joinLeague(league)} className="btn btn-success">Join</button><br />
-            { league.error && <small>Invalid code</small>}
+            <Form onSubmit={(e) => this.joinLeague(league, e)}>
+              <input type="text" value={league.entryCode} placeholder="Enter code" onChange={this.handleChange} />
+              <button className="btn btn-success">Join</button><br />
+            </Form>
+            { league.error && <small className="red">Invalid code</small>}
           </div>
         )}
         { filteredLeagues.length === 0 &&

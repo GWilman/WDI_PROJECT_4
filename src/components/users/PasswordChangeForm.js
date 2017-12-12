@@ -20,7 +20,7 @@ const UsersEditForm = ({ handleChange, handleSubmit, user, errors }) => {
               onChange={handleChange}
               value={user.password}
             />
-            { errors.password && <small>{errors.password}</small> }
+            { errors.password && <small className="red">{errors.password}</small> }
           </Col>
         </FormGroup>
 
@@ -36,7 +36,7 @@ const UsersEditForm = ({ handleChange, handleSubmit, user, errors }) => {
               onChange={handleChange}
               value={user.passwordConfirmation}
             />
-            { errors.passwordConfirmation && <small>{errors.passwordConfirmation}</small> }
+            { errors.passwordConfirmation && <small className="red">{errors.passwordConfirmation}</small> }
           </Col>
         </FormGroup>
 

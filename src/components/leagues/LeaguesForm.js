@@ -24,7 +24,7 @@ const LeaguesForm = ({ handleChange, handleSubmit, league, errors }) => {
               onChange={handleChange}
               value={league.name}
             />
-            { errors.name && <small>{errors.name}</small> }
+            { errors.name && <small className="red">{errors.name}</small> }
           </Col>
         </FormGroup>
 
@@ -40,7 +40,7 @@ const LeaguesForm = ({ handleChange, handleSubmit, league, errors }) => {
               onChange={handleChange}
               value={league.stake}
             />
-            { errors.stake && <small>{errors.stake}</small> }
+            { errors.stake && <small className="red">{errors.stake}</small> }
           </Col>
         </FormGroup>
 

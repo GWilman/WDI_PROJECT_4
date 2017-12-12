@@ -39,7 +39,7 @@ const LoginForm = ({ handleChange, handleSubmit, user, errors }) => {
               onChange={handleChange}
               value={user.password}
             />
-            { errors.message && <small>{errors.message}</small> }
+            { errors.message && <small className="red">{errors.message}</small> }
           </Col>
         </FormGroup>
 

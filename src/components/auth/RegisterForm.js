@@ -24,7 +24,7 @@ const RegisterForm = ({ handleChange, handleSubmit, user, errors }) => {
               onChange={handleChange}
               value={user.username}
             />
-            { errors.username && <p><small>{errors.username}</small></p> }
+            { errors.username && <p><small className="red">{errors.username}</small></p> }
           </Col>
         </FormGroup>
 
@@ -40,7 +40,7 @@ const RegisterForm = ({ handleChange, handleSubmit, user, errors }) => {
               onChange={handleChange}
               value={user.email}
             />
-            { errors.email && <small>{errors.email}</small> }
+            { errors.email && <small className="red">{errors.email}</small> }
           </Col>
         </FormGroup>
 
@@ -57,7 +57,7 @@ const RegisterForm = ({ handleChange, handleSubmit, user, errors }) => {
               value={user.image}
             />
           </Col>
-          { errors.image && <small>{errors.image}</small> }
+          { errors.image && <small className="red">{errors.image}</small> }
         </FormGroup>
 
         <FormGroup controlId="formHorizontalPassword">
@@ -72,7 +72,7 @@ const RegisterForm = ({ handleChange, handleSubmit, user, errors }) => {
               onChange={handleChange}
               value={user.password}
             />
-            { errors.password && <small>{errors.password}</small> }
+            { errors.password && <small className="red">{errors.password}</small> }
           </Col>
         </FormGroup>
 
@@ -88,7 +88,7 @@ const RegisterForm = ({ handleChange, handleSubmit, user, errors }) => {
               onChange={handleChange}
               value={user.passwordConfirmation}
             />
-            { errors.passwordConfirmation && <small>{errors.passwordConfirmation}</small> }
+            { errors.passwordConfirmation && <small className="red">{errors.passwordConfirmation}</small> }
           </Col>
         </FormGroup>
 

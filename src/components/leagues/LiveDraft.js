@@ -5,14 +5,21 @@ import { withRouter } from 'react-router-dom';
 import { Grid, Row, Col, Form } from 'react-bootstrap';
 import Autosuggest from 'react-bootstrap-autosuggest';
 
+import socketIOClient from 'socket.io-client';
+
 import Auth from '../../lib/Auth';
 
 class LiveDraft extends React.Component {
+
+  webSocket = socketIOClient('/socket');
+
   state = {
     league: {},
     teams: [],
     players: [],
-    picks: []
+    picks: [],
+    turn: 0,
+    round: 1
   }
 
   gridStyle = {
@@ -50,11 +57,21 @@ class LiveDraft extends React.Component {
     fontWeight: '800'
   }
 
-  inputStyle = {
-    width: '40px'
-  }
+  // inputStyle = {
+  //   width: '100%',
+  //   height: '70px'
+  // }
 
   componentDidMount() {
+
+    this.webSocket.on('connect', () => {
+      console.log(`${this.webSocket.id} connected`);
+
+      this.webSocket.on('pickMade', data => {
+        this.handleChange(data.value, data.id, data.name, data.type, true);
+      });
+
+    });
 
     const promises = {
       league: Axios.get(`/api/leagues/${this.props.match.params.id}`).then(res => res.data),
@@ -72,15 +89,46 @@ class LiveDraft extends React.Component {
             league: this.props.match.params.id
           });
         });
-        this.setState({ picks });
+
+        const teams = data.teams.map(team => team.name);
+        const players = data.players.map(player => player.name);
+
+        this.setState({
+          champion: teams,
+          runnerUp: teams,
+          topScoringTeam: teams,
+          mostYellowsTeam: teams,
+          topScorer: players,
+          mostAssists: players,
+          mostYellows: players,
+          sentOff: players,
+          finalMoM: players,
+          picks });
+
       })
       .catch(err => console.error(err));
 
+  }
+
+  checkTurn = (id, round) => {
+    const index = this.state.picks.findIndex(pick => pick.createdBy === id);
+    const { userId } = Auth.getPayload();
+
+    if (this.state.turn === index && this.state.round === round && id === userId) {
+      return false;
+    } else {
+      return true;
+    }
 
   }
 
-  handleChange = (value, id, name, type) => {
+  handleChange = (value, id, name, type, isSocket) => {
     if(!value) return false;
+    console.log(value, id, name, type, isSocket);
+    const dataList = this.state[name].filter(choice => choice !== value);
+
+    if(!isSocket) this.webSocket.emit('pickMade', { value, id, name, type });
+
     const { teams, players } = this.state;
     if(type === 'team') {
       value = teams.find(team => team.name === value).id;
@@ -95,25 +143,44 @@ class LiveDraft extends React.Component {
       pick,
       ...this.state.picks.slice(index+1)
     ];
-    this.setState({ picks });
+
+    let turn = this.state.turn + 1;
+    if (turn === this.state.picks.length) turn = 0;
+    const round = ((Object.keys(this.state.picks[turn]).length) - 1);
+    console.log('turn:', turn, 'round:', round);
+
+    this.setState({
+      picks,
+      [name]: dataList,
+      turn: turn,
+      round: round
+    }, () => console.log(this.state.picks));
 
   }
 
-  handleSubmit = (e) => {
-    e.preventDefault();
-    Axios
-      .post('/api/picks', this.state.picks, {
-        headers: {'Authorization': `Bearer ${Auth.getToken()}`}
-      })
-      .then(() => this.props.history.push(`/leagues/${this.props.match.params.id}`))
-      .catch(err => console.error(err));
+  getNameById = (id, type) => {
+    if(!id || this.state.teams.length === 0 || this.state.players.length === 0) return null;
+    if(type === 'team') {
+      return this.state.teams.find(team => team.id === id).name;
+    } else {
+      return this.state.players.find(player => player.id === id).name;
+    }
   }
+
+  // handleSubmit = (e) => {
+  //   e.preventDefault();
+  //   Axios
+  //     .post('/api/picks', this.state.picks, {
+  //       headers: {'Authorization': `Bearer ${Auth.getToken()}`}
+  //     })
+  //     .then(() => this.props.history.push(`/leagues/${this.props.match.params.id}`))
+  //     .catch(err => console.error(err));
+  // }
 
 
   render() {
-    console.log(this.state.picks);
-    const teamNames = this.state.teams.map(team => team.name);
-    const playerNames = this.state.players.map(player => player.name);
+    // console.log('turn:', this.state.turn);
+    // console.log('round:', this.state.round);
     return (
       <div>
         <h1>Live Draft</h1>
@@ -151,107 +218,125 @@ class LiveDraft extends React.Component {
                 <p style={this.pStyle}><strong>MoM (Final)</strong></p>
               </Col>
             </Row>
-            { this.state.league.users && this.state.league.users.map(user => {
+            { this.state.league.users && this.state.league.users.map((user, i) => {
               return (<Row key={user.id} style={this.rowStyle}>
                 <Col xs={3} style={this.colStyle}>
                   <p style={this.usernameStyle}>{user.username}</p>
                 </Col>
                 <Col xs={1} style={this.colStyle}>
                   <Autosuggest
-                    datalist={teamNames}
+                    datalist={this.state.champion}
                     required
-                    placeholder="Pick a team"
+                    className="autosuggest"
+                    placeholder="Pick..."
                     name="champion"
                     id="champion"
-                    value=''
+                    value={this.state.picks[i] ? this.getNameById(this.state.picks[i].champion, 'team') : ''}
+                    disabled={this.checkTurn(user.id, 1)}
                     onBlur={(value) => this.handleChange(value, user.id, 'champion', 'team')}
                   />
                 </Col>
                 <Col xs={1} style={this.colStyle}>
                   <Autosuggest
-                    datalist={teamNames}
+                    datalist={this.state.runnerUp}
                     required
-                    placeholder="Pick a team"
+                    className="autosuggest"
+                    placeholder="Pick..."
                     name="runnerUp"
                     id="runnerUp"
                     value=""
+                    disabled={this.checkTurn(user.id, 2)}
                     onBlur={(value) => this.handleChange(value, user.id, 'runnerUp', 'team')}
                   />
                 </Col>
                 <Col xs={1} style={this.colStyle}>
                   <Autosuggest
-                    datalist={teamNames}
+                    datalist={this.state.topScoringTeam}
                     required
-                    placeholder="Pick a team"
+                    className="autosuggest"
+                    placeholder="Pick..."
                     name="topScoringTeam"
                     id="topScoringTeam"
                     value=""
+                    disabled={this.checkTurn(user.id, 3)}
                     onBlur={(value) => this.handleChange(value, user.id, 'topScoringTeam', 'team')}
                   />
                 </Col>
                 <Col xs={1} style={this.colStyle}>
                   <Autosuggest
-                    datalist={teamNames}
+                    datalist={this.state.mostYellowsTeam}
                     required
-                    placeholder="Pick a team"
+                    className="autosuggest"
+                    placeholder="Pick..."
                     name="mostYellowsTeam"
                     id="mostYellowsTeam"
                     value=""
+                    disabled={this.checkTurn(user.id, 4)}
                     onBlur={(value) => this.handleChange(value, user.id, 'mostYellowsTeam', 'team')}
                   />
                 </Col>
                 <Col xs={1} style={this.colStyle}>
                   <Autosuggest
-                    datalist={playerNames}
+                    datalist={this.state.topScorer}
                     required
-                    placeholder="Pick a player"
+                    className="autosuggest"
+                    placeholder="Pick..."
                     name="topScorer"
                     id="topScorer"
                     value=""
+                    disabled={this.checkTurn(user.id, 5)}
                     onBlur={(value) => this.handleChange(value, user.id, 'topScorer', 'player')}
                   />
                 </Col>
                 <Col xs={1} style={this.colStyle}>
                   <Autosuggest
-                    datalist={playerNames}
+                    datalist={this.state.mostAssists}
                     required
-                    placeholder="Pick a player"
+                    className="autosuggest"
+                    placeholder="Pick..."
                     name="mostAssists"
                     id="mostAssists"
                     value=""
+                    disabled={this.checkTurn(user.id, 6)}
                     onBlur={(value) => this.handleChange(value, user.id, 'mostAssists', 'player')}
                   />
                 </Col>
                 <Col xs={1} style={this.colStyle}>
                   <Autosuggest
-                    datalist={playerNames}
+                    datalist={this.state.mostYellows}
                     required
-                    placeholder="Pick a player"
+                    className="autosuggest"
+                    placeholder="Pick..."
                     name="mostYellows"
                     id="mostYellows"
                     value=""
+                    disabled={this.checkTurn(user.id, 7)}
                     onBlur={(value) => this.handleChange(value, user.id, 'mostYellows', 'player')}
                   />
                 </Col>
                 <Col xs={1} style={this.colStyle}>
                   <Autosuggest
-                    datalist={playerNames}
+                    datalist={this.state.sentOff}
                     required
-                    placeholder="Pick a player"
+                    className="autosuggest"
+                    placeholder="Pick..."
                     name="sentOff"
                     id="sentOff"
                     value=""
+                    disabled={this.checkTurn(user.id, 8)}
                     onBlur={(value) => this.handleChange(value, user.id, 'sentOff', 'player')}
                   />
                 </Col>
                 <Col xs={1} style={this.endColStyle}>
                   <Autosuggest
-                    datalist={playerNames}
+                    datalist={this.state.finalMoM}
                     required
-                    placeholder="Pick a player"
+                    className="autosuggest"
+                    placeholder="Pick..."
                     name="finalMoM"
                     id="finalMoM"
                     value=""
+                    disabled={this.checkTurn(user.id, 9)}
                     onBlur={(value) => this.handleChange(value, user.id, 'finalMoM', 'player')}
                   />
                 </Col>
