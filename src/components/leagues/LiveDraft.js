@@ -141,7 +141,12 @@ class LiveDraft extends React.Component {
 
     let turn = this.state.turn + 1;
     if (turn === this.state.picks.length) turn = 0;
-    const round = ((Object.keys(this.state.picks[turn]).length) - 1);
+    let round;
+    if (this.state.picks.length > 1) {
+      round = ((Object.keys(this.state.picks[turn]).length) - 1);
+    } else {
+      round = this.state.round + 1;
+    }
     console.log('turn:', turn, 'round:', round);
 
     this.setState({
@@ -153,18 +158,17 @@ class LiveDraft extends React.Component {
 
   }
 
-  handleSubmit(e) {
+  handleSubmit = (e) => {
     e.preventDefault();
-    if (this.state.round === 10) {
-      this.state.picks.forEach(pick => {
-        Axios
-          .post('/api/picks', pick, {
-            headers: {'Authorization': `Bearer ${Auth.getToken()}`}
-          })
-          .then(() => this.props.history.push(`/leagues/${this.props.match.params.id}`))
-          .catch(err => console.error(err));
-      });
-    }
+    const { userId } = Auth.getPayload();
+    const picks = this.state.picks.find(pick => pick.createdBy === userId );
+    console.log(picks);
+    Axios
+      .post('/api/picks', picks, {
+        headers: {'Authorization': `Bearer ${Auth.getToken()}`}
+      })
+      .then(res => console.log(res))
+      .catch(err => console.error(err));
   }
 
   getNameById = (id, type) => {
@@ -183,7 +187,7 @@ class LiveDraft extends React.Component {
         { this.state.round === 10 &&
           <h1>DRAFT COMPLETE</h1>
         }
-        { this.state.picks.length > 0 &&
+        { this.state.picks.length > 0 && this.state.round !== 10 &&
           <h1>It is your turn: {this.state.league.users[this.state.turn].username}</h1>
         }
         <Form onSubmit={this.handleSubmit}>

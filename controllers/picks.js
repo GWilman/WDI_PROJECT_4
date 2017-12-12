@@ -11,7 +11,7 @@ function picksIndex(req, res, next) {
 
 function picksCreate(req, res, next) {
   req.body.createdBy = req.currentUser;
-
+  
   Pick
     .create(req.body)
     .then(pick => res.status(201).json(pick))

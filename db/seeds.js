@@ -20,7 +20,6 @@ Player.collection.drop();
 League.collection.drop();
 Pick.collection.drop();
 
-
 rp({
   url: 'http://api.football-data.org/v1/competitions/464/teams',
   method: 'GET',
@@ -39,7 +38,7 @@ rp({
 
     const teamData = data.teams.filter(team => {
       team.teamId = parseFloat(team._links.self.href.match(/([0-9]+)$/)[1]);
-      return [751, 495, 611, 654, 732, 78, 548, 752, 675, 754, 498, 726, 721, 113, 734, 4].includes(team.teamId);
+      return ![751, 495, 611, 654, 732, 78, 548, 752, 675, 754, 498, 726, 721, 113, 734, 4].includes(team.teamId);
     });
 
     return Team
