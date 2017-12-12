@@ -57,11 +57,6 @@ class LiveDraft extends React.Component {
     fontWeight: '800'
   }
 
-  // inputStyle = {
-  //   width: '100%',
-  //   height: '70px'
-  // }
-
   componentDidMount() {
 
     this.webSocket.on('connect', () => {
@@ -158,6 +153,20 @@ class LiveDraft extends React.Component {
 
   }
 
+  handleSubmit(e) {
+    e.preventDefault();
+    if (this.state.round === 10) {
+      this.state.picks.forEach(pick => {
+        Axios
+          .post('/api/picks', pick, {
+            headers: {'Authorization': `Bearer ${Auth.getToken()}`}
+          })
+          .then(() => this.props.history.push(`/leagues/${this.props.match.params.id}`))
+          .catch(err => console.error(err));
+      });
+    }
+  }
+
   getNameById = (id, type) => {
     if(!id || this.state.teams.length === 0 || this.state.players.length === 0) return null;
     if(type === 'team') {
@@ -167,24 +176,20 @@ class LiveDraft extends React.Component {
     }
   }
 
-  // handleSubmit = (e) => {
-  //   e.preventDefault();
-  //   Axios
-  //     .post('/api/picks', this.state.picks, {
-  //       headers: {'Authorization': `Bearer ${Auth.getToken()}`}
-  //     })
-  //     .then(() => this.props.history.push(`/leagues/${this.props.match.params.id}`))
-  //     .catch(err => console.error(err));
-  // }
-
-
   render() {
-    // console.log('turn:', this.state.turn);
-    // console.log('round:', this.state.round);
     return (
       <div>
         <h1>Live Draft</h1>
+        { this.state.round === 10 &&
+          <h1>DRAFT COMPLETE</h1>
+        }
+        { this.state.picks.length > 0 &&
+          <h1>It is your turn: {this.state.league.users[this.state.turn].username}</h1>
+        }
         <Form onSubmit={this.handleSubmit}>
+          { this.state.round === 10 &&
+            <button className="btn btn-primary">Finished</button>
+          }
           <Grid style={this.gridStyle}>
             <Row style={this.rowStyle}>
               <Col xs={3} style={this.colStyle}>
@@ -244,7 +249,7 @@ class LiveDraft extends React.Component {
                     placeholder="Pick..."
                     name="runnerUp"
                     id="runnerUp"
-                    value=""
+                    value={this.state.picks[i] ? this.getNameById(this.state.picks[i].runnerUp, 'team') : ''}
                     disabled={this.checkTurn(user.id, 2)}
                     onBlur={(value) => this.handleChange(value, user.id, 'runnerUp', 'team')}
                   />
@@ -257,7 +262,7 @@ class LiveDraft extends React.Component {
                     placeholder="Pick..."
                     name="topScoringTeam"
                     id="topScoringTeam"
-                    value=""
+                    value={this.state.picks[i] ? this.getNameById(this.state.picks[i].topScoringTeam, 'team') : ''}
                     disabled={this.checkTurn(user.id, 3)}
                     onBlur={(value) => this.handleChange(value, user.id, 'topScoringTeam', 'team')}
                   />
@@ -270,7 +275,7 @@ class LiveDraft extends React.Component {
                     placeholder="Pick..."
                     name="mostYellowsTeam"
                     id="mostYellowsTeam"
-                    value=""
+                    value={this.state.picks[i] ? this.getNameById(this.state.picks[i].mostYellowsTeam, 'team') : ''}
                     disabled={this.checkTurn(user.id, 4)}
                     onBlur={(value) => this.handleChange(value, user.id, 'mostYellowsTeam', 'team')}
                   />
@@ -283,7 +288,7 @@ class LiveDraft extends React.Component {
                     placeholder="Pick..."
                     name="topScorer"
                     id="topScorer"
-                    value=""
+                    value={this.state.picks[i] ? this.getNameById(this.state.picks[i].topScorer, 'player') : ''}
                     disabled={this.checkTurn(user.id, 5)}
                     onBlur={(value) => this.handleChange(value, user.id, 'topScorer', 'player')}
                   />
@@ -296,7 +301,7 @@ class LiveDraft extends React.Component {
                     placeholder="Pick..."
                     name="mostAssists"
                     id="mostAssists"
-                    value=""
+                    value={this.state.picks[i] ? this.getNameById(this.state.picks[i].mostAssists, 'player') : ''}
                     disabled={this.checkTurn(user.id, 6)}
                     onBlur={(value) => this.handleChange(value, user.id, 'mostAssists', 'player')}
                   />
@@ -309,7 +314,7 @@ class LiveDraft extends React.Component {
                     placeholder="Pick..."
                     name="mostYellows"
                     id="mostYellows"
-                    value=""
+                    value={this.state.picks[i] ? this.getNameById(this.state.picks[i].mostYellows, 'player') : ''}
                     disabled={this.checkTurn(user.id, 7)}
                     onBlur={(value) => this.handleChange(value, user.id, 'mostYellows', 'player')}
                   />
@@ -322,7 +327,7 @@ class LiveDraft extends React.Component {
                     placeholder="Pick..."
                     name="sentOff"
                     id="sentOff"
-                    value=""
+                    value={this.state.picks[i] ? this.getNameById(this.state.picks[i].sentOff, 'player') : ''}
                     disabled={this.checkTurn(user.id, 8)}
                     onBlur={(value) => this.handleChange(value, user.id, 'sentOff', 'player')}
                   />
@@ -335,7 +340,7 @@ class LiveDraft extends React.Component {
                     placeholder="Pick..."
                     name="finalMoM"
                     id="finalMoM"
-                    value=""
+                    value={this.state.picks[i] ? this.getNameById(this.state.picks[i].finalMoM, 'player') : ''}
                     disabled={this.checkTurn(user.id, 9)}
                     onBlur={(value) => this.handleChange(value, user.id, 'finalMoM', 'player')}
                   />
