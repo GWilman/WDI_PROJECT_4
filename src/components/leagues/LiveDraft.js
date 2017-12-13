@@ -57,12 +57,37 @@ class LiveDraft extends React.Component {
     fontWeight: '800'
   }
 
+  imgStyle = {
+    height: '34px',
+    width: '34px',
+    borderRadius: '100%'
+  }
+
+  h1Style = {
+    textAlign: 'center',
+    marginBottom: '0'
+  }
+
+  h3Style = {
+    textAlign: 'center',
+    margin: '10px 0'
+  }
+
   componentDidMount() {
 
     this.webSocket.on('connect', () => {
       console.log(`${this.webSocket.id} connected`);
 
+      this.webSocket.on('new user', users => {
+        if(!this.state.league.users) return false;
+        if(users.length > this.state.league.users.length) {
+          const league = Object.assign({}, this.state.league, { users });
+          this.setState({ league });
+        }
+      });
+
       this.webSocket.on('pickMade', data => {
+        console.log('pickMade');
         this.handleChange(data.value, data.id, data.name, data.type, true);
       });
 
@@ -76,7 +101,7 @@ class LiveDraft extends React.Component {
 
     Promise.props(promises)
       .then(data => {
-        this.setState(data);
+        this.setState(data, () => this.webSocket.emit('new user', this.state.league.users));
         const picks = [];
         this.state.league.users.forEach(user => {
           picks.push({
@@ -98,7 +123,8 @@ class LiveDraft extends React.Component {
           mostYellows: players,
           sentOff: players,
           finalMoM: players,
-          picks });
+          picks
+        });
 
       })
       .catch(err => console.error(err));
@@ -126,10 +152,13 @@ class LiveDraft extends React.Component {
 
     const { teams, players } = this.state;
     if(type === 'team') {
-      value = teams.find(team => team.name === value).id;
+      value = teams.find(team => team.name === value);
     } else {
-      value = players.find(player => player.name === value).id;
+      value = players.find(player => player.name === value);
     }
+
+    if(!value) return false;
+    value = value.id;
 
     const index = this.state.picks.findIndex(pick => pick.createdBy === id);
     const pick = Object.assign({}, this.state.picks[index], { [name]: value });
@@ -162,7 +191,6 @@ class LiveDraft extends React.Component {
     e.preventDefault();
     const { userId } = Auth.getPayload();
     const picks = this.state.picks.find(pick => pick.createdBy === userId );
-    console.log(picks);
     Axios
       .post('/api/picks', picks, {
         headers: {'Authorization': `Bearer ${Auth.getToken()}`}
@@ -183,12 +211,14 @@ class LiveDraft extends React.Component {
   render() {
     return (
       <div>
-        <h1>Live Draft</h1>
         { this.state.round === 10 &&
           <h1>DRAFT COMPLETE</h1>
         }
         { this.state.picks.length > 0 && this.state.round !== 10 &&
-          <h1>It is your turn: {this.state.league.users[this.state.turn].username}</h1>
+          <div>
+            <h1 style={this.h1Style}>YOUR LEAGUE IS DRAFTING</h1>
+            <h3 style={this.h3Style}>It is your turn: {this.state.league.users[this.state.turn].username}</h3>
+          </div>
         }
         <Form onSubmit={this.handleSubmit}>
           { this.state.round === 10 &&
@@ -230,7 +260,9 @@ class LiveDraft extends React.Component {
             { this.state.league.users && this.state.league.users.map((user, i) => {
               return (<Row key={user.id} style={this.rowStyle}>
                 <Col xs={3} style={this.colStyle}>
-                  <p style={this.usernameStyle}>{user.username}</p>
+                  <p style={this.usernameStyle}>
+                    { user.image && <img src={user.image} style={this.imgStyle} />}
+                    {user.username}</p>
                 </Col>
                 <Col xs={1} style={this.colStyle}>
                   <Autosuggest
@@ -242,7 +274,7 @@ class LiveDraft extends React.Component {
                     id="champion"
                     value={this.state.picks[i] ? this.getNameById(this.state.picks[i].champion, 'team') : ''}
                     disabled={this.checkTurn(user.id, 1)}
-                    onBlur={(value) => this.handleChange(value, user.id, 'champion', 'team')}
+                    onChange={(value) => this.handleChange(value, user.id, 'champion', 'team')}
                   />
                 </Col>
                 <Col xs={1} style={this.colStyle}>
@@ -255,7 +287,7 @@ class LiveDraft extends React.Component {
                     id="runnerUp"
                     value={this.state.picks[i] ? this.getNameById(this.state.picks[i].runnerUp, 'team') : ''}
                     disabled={this.checkTurn(user.id, 2)}
-                    onBlur={(value) => this.handleChange(value, user.id, 'runnerUp', 'team')}
+                    onChange={(value) => this.handleChange(value, user.id, 'runnerUp', 'team')}
                   />
                 </Col>
                 <Col xs={1} style={this.colStyle}>
@@ -268,7 +300,7 @@ class LiveDraft extends React.Component {
                     id="topScoringTeam"
                     value={this.state.picks[i] ? this.getNameById(this.state.picks[i].topScoringTeam, 'team') : ''}
                     disabled={this.checkTurn(user.id, 3)}
-                    onBlur={(value) => this.handleChange(value, user.id, 'topScoringTeam', 'team')}
+                    onChange={(value) => this.handleChange(value, user.id, 'topScoringTeam', 'team')}
                   />
                 </Col>
                 <Col xs={1} style={this.colStyle}>
@@ -281,7 +313,7 @@ class LiveDraft extends React.Component {
                     id="mostYellowsTeam"
                     value={this.state.picks[i] ? this.getNameById(this.state.picks[i].mostYellowsTeam, 'team') : ''}
                     disabled={this.checkTurn(user.id, 4)}
-                    onBlur={(value) => this.handleChange(value, user.id, 'mostYellowsTeam', 'team')}
+                    onChange={(value) => this.handleChange(value, user.id, 'mostYellowsTeam', 'team')}
                   />
                 </Col>
                 <Col xs={1} style={this.colStyle}>
@@ -294,7 +326,7 @@ class LiveDraft extends React.Component {
                     id="topScorer"
                     value={this.state.picks[i] ? this.getNameById(this.state.picks[i].topScorer, 'player') : ''}
                     disabled={this.checkTurn(user.id, 5)}
-                    onBlur={(value) => this.handleChange(value, user.id, 'topScorer', 'player')}
+                    onChange={(value) => this.handleChange(value, user.id, 'topScorer', 'player')}
                   />
                 </Col>
                 <Col xs={1} style={this.colStyle}>
@@ -307,7 +339,7 @@ class LiveDraft extends React.Component {
                     id="mostAssists"
                     value={this.state.picks[i] ? this.getNameById(this.state.picks[i].mostAssists, 'player') : ''}
                     disabled={this.checkTurn(user.id, 6)}
-                    onBlur={(value) => this.handleChange(value, user.id, 'mostAssists', 'player')}
+                    onChange={(value) => this.handleChange(value, user.id, 'mostAssists', 'player')}
                   />
                 </Col>
                 <Col xs={1} style={this.colStyle}>
@@ -320,7 +352,7 @@ class LiveDraft extends React.Component {
                     id="mostYellows"
                     value={this.state.picks[i] ? this.getNameById(this.state.picks[i].mostYellows, 'player') : ''}
                     disabled={this.checkTurn(user.id, 7)}
-                    onBlur={(value) => this.handleChange(value, user.id, 'mostYellows', 'player')}
+                    onChange={(value) => this.handleChange(value, user.id, 'mostYellows', 'player')}
                   />
                 </Col>
                 <Col xs={1} style={this.colStyle}>
@@ -333,7 +365,7 @@ class LiveDraft extends React.Component {
                     id="sentOff"
                     value={this.state.picks[i] ? this.getNameById(this.state.picks[i].sentOff, 'player') : ''}
                     disabled={this.checkTurn(user.id, 8)}
-                    onBlur={(value) => this.handleChange(value, user.id, 'sentOff', 'player')}
+                    onChange={(value) => this.handleChange(value, user.id, 'sentOff', 'player')}
                   />
                 </Col>
                 <Col xs={1} style={this.endColStyle}>
@@ -346,7 +378,7 @@ class LiveDraft extends React.Component {
                     id="finalMoM"
                     value={this.state.picks[i] ? this.getNameById(this.state.picks[i].finalMoM, 'player') : ''}
                     disabled={this.checkTurn(user.id, 9)}
-                    onBlur={(value) => this.handleChange(value, user.id, 'finalMoM', 'player')}
+                    onChange={(value) => this.handleChange(value, user.id, 'finalMoM', 'player')}
                   />
                 </Col>
               </Row>);

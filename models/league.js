@@ -4,9 +4,8 @@ const leagueSchema = new mongoose.Schema({
   name: { type: String, required: 'A league name is required.' },
   stake: { type: Number, required: 'Stake is required. Enter 0 if playing for pride is enough.' },
   createdBy: { type: mongoose.Schema.ObjectId, ref: 'User' },
+  startTime: { type: Date },
   code: { type: Number, required: true }
-}, {
-  timestamps: true
 });
 
 leagueSchema

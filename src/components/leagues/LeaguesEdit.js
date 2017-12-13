@@ -4,7 +4,7 @@ import Auth from '../../lib/Auth';
 
 import LeaguesForm from './LeaguesForm';
 
-class LeaguesNew extends React.Component {
+class LeaguesEdit extends React.Component {
   state = {
     league: {
       name: '',
@@ -17,10 +17,16 @@ class LeaguesNew extends React.Component {
   };
 
   componentDidMount() {
-    const { userId } = Auth.getPayload();
     Axios
-      .get(`/api/users/${userId}`)
-      .then(res => this.setState({ user: res.data }))
+      .get(`/api/leagues/${this.props.match.params.id}`)
+      .then(res => this.setState({
+        league: {
+          name: res.data.name,
+          stake: res.data.stake,
+          startTime: res.data.startTime,
+          code: res.data.code
+        }
+      }))
       .catch(err => console.error(err));
   }
 
@@ -33,24 +39,11 @@ class LeaguesNew extends React.Component {
   handleSubmit = (e) => {
     e.preventDefault();
 
-    const code = (Math.floor(Math.random() * 10000) + 10000).toString().substring(1);
-    const league = Object.assign({}, this.state.league, { code: parseInt(code) });
-
     Axios
-      .post('/api/leagues', league, {
+      .put(`/api/leagues/${this.props.match.params.id}`, this.state.league, {
         headers: {'Authorization': `Bearer ${Auth.getToken()}`}
       })
-      .then(league => {
-
-        const leagues = this.state.user.leagues.concat(league.data.id);
-        const user = Object.assign({}, this.state.user, { leagues });
-
-        Axios
-          .put(`/api/users/${this.state.user.id}`, user)
-          .then(() => {
-            this.props.history.push(`/leagues/${league.data.id}`);
-          });
-      })
+      .then(() => this.props.history.push(`/leagues/${this.props.match.params.id}`))
       .catch(err => this.setState({ errors: err.response.data.errors }));
 
   }
@@ -67,4 +60,4 @@ class LeaguesNew extends React.Component {
   }
 }
 
-export default LeaguesNew;
+export default LeaguesEdit;

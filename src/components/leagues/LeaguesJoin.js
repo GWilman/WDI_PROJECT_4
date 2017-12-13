@@ -3,6 +3,7 @@ import Axios from 'axios';
 import { Link } from 'react-router-dom';
 import { Form } from 'react-bootstrap';
 import Promise from 'bluebird';
+import moment from 'moment';
 
 import Auth from '../../lib/Auth';
 
@@ -60,7 +61,9 @@ class LeaguesIndex extends React.Component {
 
   render() {
     if(!this.state.leagues) return null;
-    const filteredLeagues = this.state.leagues.filter(league => !(league.users.find(user => user.id === this.state.user.id)));
+    const now = moment();
+    const activeLeagues = this.state.leagues.filter(league => (moment(league.startTime).diff(now, 'seconds') > 0));
+    const filteredLeagues = activeLeagues.filter(league => !(league.users.find(user => user.id === this.state.user.id)));
     return (
       <div>
         <h1>Join a League</h1>

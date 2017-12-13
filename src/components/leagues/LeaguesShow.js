@@ -1,12 +1,11 @@
 import React from 'react';
 import Axios from 'axios';
 import { Row, Col } from 'react-bootstrap';
-// import { Link } from 'react-router-dom';
-// import _ from 'lodash';
+import { Link } from 'react-router-dom';
+import moment from 'moment';
 
 import Auth from '../../lib/Auth';
 
-// import Picker from './Picker.js';
 import LiveDraft from './LiveDraft.js';
 import PicksGrid from './PicksGrid.js';
 
@@ -14,7 +13,9 @@ class LeaguesShow extends React.Component {
   state = {
     league: null,
     isOwned: false,
-    hasMadePick: false
+    hasMadePick: false,
+    nowDrafting: false,
+    draftTimePretty: null
   }
 
   h4Style = {
@@ -31,6 +32,15 @@ class LeaguesShow extends React.Component {
         if (userId === res.data.createdBy.id) isOwned = true;
         this.setState({ hasMadePick, league: res.data, isOwned: isOwned });
       })
+      .then(() => {
+        const now = moment();
+        const draftTime = moment(this.state.league.startTime);
+        const diff = (draftTime.diff(now, 'seconds'));
+        console.log(diff);
+        if (diff < 10) {
+          this.setState({ nowDrafting: true  });
+        }
+      })
       .catch(err => console.error(err));
   }
 
@@ -45,16 +55,26 @@ class LeaguesShow extends React.Component {
 
   render() {
     if(!this.state.league) return null;
+    const draftTimePretty = moment(this.state.league.startTime).format('ddd DD MMM, LT');
+    const countdown = moment().to(this.state.league.startTime);
     return (
       <div>
         <Row>
           <Col xs={6}>
             <h1>{this.state.league.name}</h1>
-            <h3>Stake: £{this.state.league.stake}</h3>
-            <h3>Owner: {this.state.league.createdBy.username}</h3>
-            <h3>Entry Code: {this.state.league.code}</h3>
-            { this.state.isOwned &&
-              <button className="btn btn-primary" onClick={this.deleteLeague.bind(this)}>Delete League</button>
+            { !this.state.nowDrafting &&
+              <div>
+                <h3>Stake: £{this.state.league.stake}</h3>
+                <h3>Owner: {this.state.league.createdBy.username}</h3>
+                <h3>Entry Code: {this.state.league.code}</h3>
+                <h3>Drafting: {draftTimePretty}</h3>
+              </div>
+            }
+            { (!this.state.nowDrafting || this.state.hasMadePick) && this.state.isOwned &&
+              <div>
+                <button className="btn btn-primary" onClick={this.deleteLeague.bind(this)}>Delete League</button>
+                <Link to={`/leagues/${this.props.match.params.id}/edit`}><button className="btn btn-primary">Edit League</button></Link>
+              </div>
             }
           </Col>
           <Col xs={6}>
@@ -76,7 +96,7 @@ class LeaguesShow extends React.Component {
         </Row>
         { !this.state.hasMadePick ? (
           // <Picker />
-          <LiveDraft />
+          this.state.nowDrafting ? <LiveDraft /> : <h1>Your league is not drafting at the moment.<br />Starting in {countdown}</h1>
         ) : (
           <PicksGrid />
         )}

@@ -8,6 +8,7 @@ import LeaguesNew from '../leagues/LeaguesNew';
 import LeaguesIndex from '../leagues/LeaguesIndex';
 import LeaguesJoin from '../leagues/LeaguesJoin';
 import LeaguesShow from '../leagues/LeaguesShow';
+import LeaguesEdit from '../leagues/LeaguesEdit';
 import UsersShow from '../users/UsersShow';
 
 const Routes = ({ setUser }) => {
@@ -18,6 +19,7 @@ const Routes = ({ setUser }) => {
       <Route path="/register" render={props => <Register {...props} setUser={setUser} />} />
       <Route path="/leagues/new" component={ LeaguesNew } />
       <Route path="/leagues/join" component={ LeaguesJoin } />
+      <Route path="/leagues/:id/edit" component={ LeaguesEdit } />
       <Route path="/leagues/:id" component={ LeaguesShow } />
       <Route path="/leagues" component={ LeaguesIndex } />
       <Route path="/users/:id" component={ UsersShow } />

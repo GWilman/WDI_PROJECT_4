@@ -1,6 +1,9 @@
 import React from 'react';
-
 import { FormGroup, FormControl, Form, Col, Row, ControlLabel, Button } from 'react-bootstrap';
+import Datetime from 'react-datetime';
+
+import '../../scss/datetime.scss';
+
 
 const LeaguesForm = ({ handleChange, handleSubmit, league, errors }) => {
   const formInvalid = Object.keys(errors).some(key => errors[key]);
@@ -20,7 +23,6 @@ const LeaguesForm = ({ handleChange, handleSubmit, league, errors }) => {
             <FormControl
               type="text"
               name="name"
-              placeholder="League Name"
               onChange={handleChange}
               value={league.name}
             />
@@ -36,7 +38,6 @@ const LeaguesForm = ({ handleChange, handleSubmit, league, errors }) => {
             <FormControl
               type="number"
               name="stake"
-              placeholder="Stake"
               onChange={handleChange}
               value={league.stake}
             />
@@ -44,10 +45,25 @@ const LeaguesForm = ({ handleChange, handleSubmit, league, errors }) => {
           </Col>
         </FormGroup>
 
+        <FormGroup controlId="formHorizontalTime">
+          <Col componentClass={ControlLabel} sm={2}>
+            Time of Draft
+          </Col>
+          <Col sm={10}>
+            <Datetime
+              type="datetime"
+              name="startTime"
+              onChange={(value) => handleChange({ target: { name: 'startTime', value }})}
+              value={league.startTime}
+            />
+            { errors.stake && <small className="red">{errors.startTime}</small> }
+          </Col>
+        </FormGroup>
+
         <FormGroup>
           <Col smOffset={2} sm={10}>
             <Button type="submit" disabled={formInvalid}>
-              Create League
+              Submit
             </Button>
           </Col>
         </FormGroup>
