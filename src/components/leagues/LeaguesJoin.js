@@ -65,7 +65,7 @@ class LeaguesIndex extends React.Component {
     const activeLeagues = this.state.leagues.filter(league => (moment(league.startTime).diff(now, 'seconds') > 0));
     const filteredLeagues = activeLeagues.filter(league => !(league.users.find(user => user.id === this.state.user.id)));
     return (
-      <div>
+      <div className="container mainPageComponent">
         <h1>Join a League</h1>
         { filteredLeagues.map(league =>
           <div key={league.id} className="league-container">

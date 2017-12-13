@@ -1,5 +1,42 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto');
+
+$mainFont: 'Roboto', sans-serif;
+
 body {
-  padding-bottom: 50px;
+  // padding-bottom: 50px;
+  font-family: $mainFont;
+  background: #f7f7f7;
+}
+
+.mainPageComponent {
+  padding: 30px 0 80px;
+}
+
+.navbar {
+  margin-bottom: 0;
+}
+
+.btn {
+  border: 0;
+  border-radius: 4px;
+}
+
+.btn-green {
+  background: #0BE065;
+  color: #fff;
+  &:hover {
+    background: #00d358;
+    color: #fff;
+  }
+}
+
+.btn-blue {
+  background: #0CB3EB;
+  color: #fff;
+  &:hover {
+    background: #00a0d6;
+    color: #fff;
+  }
 }
 
 .red {

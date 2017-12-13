@@ -42,7 +42,7 @@ const UsersEditForm = ({ handleChange, handleSubmit, user, errors }) => {
 
         <FormGroup>
           <Col smOffset={3} sm={9}>
-            <Button type="submit" disabled={formInvalid}>
+            <Button type="submit" disabled={formInvalid} className="btn btn-green">
               Save Changes
             </Button>
           </Col>

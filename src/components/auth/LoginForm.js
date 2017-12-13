@@ -5,7 +5,7 @@ import { FormGroup, FormControl, Form, Col, Row, ControlLabel, Button } from 're
 const LoginForm = ({ handleChange, handleSubmit, user, errors }) => {
   const formInvalid = Object.keys(errors).some(key => errors[key]);
   return (
-    <div>
+    <div className="container mainPageComponent">
       <Row>
         <Col sm={10} smOffset={2}>
           <h1>Login</h1>
@@ -45,7 +45,7 @@ const LoginForm = ({ handleChange, handleSubmit, user, errors }) => {
 
         <FormGroup>
           <Col smOffset={2} sm={10}>
-            <Button type="submit" disabled={formInvalid}>
+            <Button type="submit" disabled={formInvalid} className="btn btn-green">
               Sign in
             </Button>
           </Col>

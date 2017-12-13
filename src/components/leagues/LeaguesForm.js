@@ -8,7 +8,7 @@ import '../../scss/datetime.scss';
 const LeaguesForm = ({ handleChange, handleSubmit, league, errors }) => {
   const formInvalid = Object.keys(errors).some(key => errors[key]);
   return (
-    <div>
+    <div className="container mainPageComponent">
       <Row>
         <Col sm={10} smOffset={2}>
           <h1>Create League</h1>
@@ -62,7 +62,7 @@ const LeaguesForm = ({ handleChange, handleSubmit, league, errors }) => {
 
         <FormGroup>
           <Col smOffset={2} sm={10}>
-            <Button type="submit" disabled={formInvalid}>
+            <Button type="submit" disabled={formInvalid} className="btn btn-blue">
               Submit
             </Button>
           </Col>

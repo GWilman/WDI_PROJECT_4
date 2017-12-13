@@ -19,7 +19,8 @@ class LiveDraft extends React.Component {
     players: [],
     picks: [],
     turn: 0,
-    round: 1
+    round: 1,
+    sockets: []
   }
 
   gridStyle = {
@@ -78,13 +79,23 @@ class LiveDraft extends React.Component {
     this.webSocket.on('connect', () => {
       console.log(`${this.webSocket.id} connected`);
 
-      this.webSocket.on('new user', users => {
-        if(!this.state.league.users) return false;
-        if(users.length > this.state.league.users.length) {
-          const league = Object.assign({}, this.state.league, { users });
-          this.setState({ league });
-        }
+      const { userId } = Auth.getPayload();
+      this.webSocket.emit('set user', userId);
+      this.webSocket.userId = userId;
+      const socketsArray = this.state.sockets.concat(this.webSocket.userId);
+      this.setState({ sockets: socketsArray }, () => console.log(this.state.sockets));
+
+      this.webSocket.on('add user', data => {
+        this.setState({ sockets: this.state.sockets.concat(data) }, () => console.log(this.state.sockets));
       });
+
+      // this.webSocket.on('new user', users => {
+      //   if(!this.state.league.users) return false;
+      //   if(users.length > this.state.league.users.length) {
+      //     const league = Object.assign({}, this.state.league, { users });
+      //     this.setState({ league });
+      //   }
+      // });
 
       this.webSocket.on('pickMade', data => {
         console.log('pickMade');
@@ -185,6 +196,10 @@ class LiveDraft extends React.Component {
       round: round
     }, () => console.log(this.state.picks));
 
+    if (this.state.round === 10) {
+      this.webSocket.emit('draftFinished');
+    }
+
   }
 
   handleSubmit = (e) => {
@@ -210,6 +225,9 @@ class LiveDraft extends React.Component {
   }
 
   render() {
+    if (!this.state.league.users) return false;
+    const players = this.state.league.users.filter(user => this.state.sockets.includes(user.id));
+    console.log('players:', players);
     return (
       <div>
         { this.state.round === 10 &&

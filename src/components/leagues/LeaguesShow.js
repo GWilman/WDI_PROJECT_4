@@ -15,11 +15,18 @@ class LeaguesShow extends React.Component {
     isOwned: false,
     hasMadePick: false,
     nowDrafting: false,
-    draftTimePretty: null
+    draftTimePretty: null,
+    time: ''
   }
+
+  timeInterval = null;
 
   h4Style = {
     marginTop: '30px'
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.timeInterval);
   }
 
   componentDidMount() {
@@ -33,16 +40,26 @@ class LeaguesShow extends React.Component {
         this.setState({ hasMadePick, league: res.data, isOwned: isOwned });
       })
       .then(() => {
-        const now = moment();
-        const draftTime = moment(this.state.league.startTime);
-        const diff = (draftTime.diff(now, 'seconds'));
-        console.log(diff);
-        if (diff < 10) {
-          this.setState({ nowDrafting: true  });
-        }
-        if (this.state.hasMadePick) {
-          this.setState({ nowDrafting: false });
-        }
+        this.timeInterval = setInterval(() => {
+          if (this.state.time === '00:00:00') {
+            this.setState({ nowDrafting: true  });
+            return clearInterval(this.timeInterval);
+          }
+
+          if (this.state.hasMadePick) this.setState({ nowDrafting: false });
+
+          const now = moment();
+          const draftTime = moment(this.state.league.startTime);
+          const diff = (draftTime.diff(now));
+
+          if (diff > 0) {
+            const time = moment(diff).format('HH:mm:ss');
+            this.setState({ time: time });
+          } else {
+            clearInterval(this.timeInterval);
+          }
+
+        }, 1000);
       })
       .catch(err => console.error(err));
   }
@@ -59,9 +76,8 @@ class LeaguesShow extends React.Component {
   render() {
     if(!this.state.league) return null;
     const draftTimePretty = moment(this.state.league.startTime).format('ddd DD MMM, LT');
-    const countdown = moment().to(this.state.league.startTime);
     return (
-      <div>
+      <div className="container mainPageComponent">
         <Row>
           <Col xs={6}>
             <h1>{this.state.league.name}</h1>
@@ -98,11 +114,10 @@ class LeaguesShow extends React.Component {
           </Col>
         </Row>
         { !this.state.hasMadePick ? (
-          // <Picker />
-          this.state.nowDrafting ? <LiveDraft /> : <h1>Your league is not drafting at the moment.<br />Starting in {countdown}</h1>
-        ) : (
+          this.state.nowDrafting ? <LiveDraft /> : <div><h1>Your league is drafting in {this.state.time}.</h1> <h3>Make sure you are on this page when the clock hits 00.00.00 or you will not be able to draft.</h3></div>
+        ) :
           <PicksGrid />
-        )}
+        }
       </div>
     );
   }

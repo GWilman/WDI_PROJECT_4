@@ -47,7 +47,7 @@ class UsersShow extends React.Component {
   render() {
     if(!this.state.user.leagues) return null;
     return (
-      <div>
+      <div className="container mainPageComponent">
         <Row>
           <Col sm={6}>
             <img style={this.imgStyle} src={this.state.user.image} />

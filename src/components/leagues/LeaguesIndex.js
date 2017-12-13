@@ -23,7 +23,7 @@ class LeaguesIndex extends React.Component {
   render() {
     const now = moment();
     return (
-      <div>
+      <div className="container mainPageComponent">
         <h1>My Leagues</h1>
         { this.state.leagues.map(league =>
           <div key={league.id} className="league-container">
@@ -38,7 +38,7 @@ class LeaguesIndex extends React.Component {
               <p>Draft Complete</p>
             }
             <Link to={`/leagues/${league.id}`}>
-              <button className="btn btn-primary">League Hub</button>
+              <button className="btn btn-blue">League Hub</button>
             </Link>
           </div>
         )}

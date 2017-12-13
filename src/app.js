@@ -45,7 +45,7 @@ class App extends React.Component {
             image={this.state.user.image}
             navImage={this.navImage}
           />
-          <main className="container">
+          <main>
             <Routes setUser={this.setUser} />
           </main>
         </div>
