@@ -1,7 +1,7 @@
 import React from 'react';
 import Axios from 'axios';
 import { Link } from 'react-router-dom';
-// import _ from 'lodash';
+import moment from 'moment';
 
 import Auth from '../../lib/Auth';
 
@@ -21,6 +21,7 @@ class LeaguesIndex extends React.Component {
   }
 
   render() {
+    const now = moment();
     return (
       <div>
         <h1>My Leagues</h1>
@@ -30,6 +31,11 @@ class LeaguesIndex extends React.Component {
             <p>Stake: <strong>£{league.stake}</strong></p>
             { league.createdBy.username &&
             <p>Owner: <strong>{league.createdBy.username}</strong></p>
+            }
+            { (moment(league.startTime).diff(now, 'seconds') > 0) ?
+              <p>Drafting in {moment().to(league.startTime)}</p>
+              :
+              <p>Draft Complete</p>
             }
             <Link to={`/leagues/${league.id}`}>
               <button className="btn btn-primary">League Hub</button>

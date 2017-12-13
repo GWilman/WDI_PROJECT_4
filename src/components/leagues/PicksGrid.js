@@ -3,6 +3,7 @@ import Axios from 'axios';
 import { withRouter } from 'react-router-dom';
 import { Grid, Row, Col, Form } from 'react-bootstrap';
 import _ from 'lodash';
+import Promise from 'bluebird';
 
 import Auth from '../../lib/Auth';
 
@@ -79,37 +80,17 @@ class PicksGrid extends React.Component {
 
   handleSubmit = (e) => {
     e.preventDefault();
-    const ids = this.state.picks.map(pick => pick.id);
-
-    for (let i = 0; i < ids.length; i++) {
-
-      const updatePick = Object.assign({}, this.state.picks[i], {
-        createdBy: this.state.picks[i].createdBy.id,
-        league: this.state.picks[i].league.id,
-        champion: this.state.picks[i].champion.id,
-        runnerUp: this.state.picks[i].runnerUp.id,
-        topScoringTeam: this.state.picks[i].topScoringTeam.id,
-        mostYellowsTeam: this.state.picks[i].mostYellowsTeam.id,
-        topScorer: this.state.picks[i].topScorer.id,
-        mostAssists: this.state.picks[i].mostAssists.id,
-        mostYellows: this.state.picks[i].mostYellows.id,
-        sentOff: this.state.picks[i].sentOff.id,
-        finalMoM: this.state.picks[i].finalMoM.id
-      });
-
-      Axios
-        .put(`/api/picks/${ids[i]}`, updatePick, {
+    const promises = this.state.picks.map(pick => {
+      return Axios
+        .put(`/api/picks/${pick.id}`, pick, {
           headers: {'Authorization': `Bearer ${Auth.getToken()}`}
-        })
-        .then()
-        .catch(err => console.error(err));
-    }
+        }).then(res => res.data);
+    });
 
-    Axios
-      .get('/api/picks', {
-        params: { league: this.props.match.params.id }
-      })
+    Promise.all(promises)
+      .then(() => Axios.get('/api/picks', { params: { league: this.props.match.params.id } }))
       .then(res => {
+        console.log('submit get picks', res.data);
         const { userId } = Auth.getPayload();
         let isOwned = false;
         if (userId === res.data[0].league.createdBy) isOwned = true;

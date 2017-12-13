@@ -40,6 +40,9 @@ class LeaguesShow extends React.Component {
         if (diff < 10) {
           this.setState({ nowDrafting: true  });
         }
+        if (this.state.hasMadePick) {
+          this.setState({ nowDrafting: false });
+        }
       })
       .catch(err => console.error(err));
   }
@@ -67,7 +70,7 @@ class LeaguesShow extends React.Component {
                 <h3>Stake: £{this.state.league.stake}</h3>
                 <h3>Owner: {this.state.league.createdBy.username}</h3>
                 <h3>Entry Code: {this.state.league.code}</h3>
-                <h3>Drafting: {draftTimePretty}</h3>
+                <h3>Draft: {draftTimePretty}</h3>
               </div>
             }
             { (!this.state.nowDrafting || this.state.hasMadePick) && this.state.isOwned &&

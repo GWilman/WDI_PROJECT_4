@@ -2,7 +2,7 @@ import React from 'react';
 import Axios from 'axios';
 import Promise from 'bluebird';
 import { withRouter } from 'react-router-dom';
-import { Grid, Row, Col, Form } from 'react-bootstrap';
+import { Grid, Row, Col, Form, Modal, Button } from 'react-bootstrap';
 import Autosuggest from 'react-bootstrap-autosuggest';
 
 import socketIOClient from 'socket.io-client';
@@ -189,6 +189,7 @@ class LiveDraft extends React.Component {
 
   handleSubmit = (e) => {
     e.preventDefault();
+    this.setState({ round: 11 });
     const { userId } = Auth.getPayload();
     const picks = this.state.picks.find(pick => pick.createdBy === userId );
     Axios
@@ -220,10 +221,7 @@ class LiveDraft extends React.Component {
             <h3 style={this.h3Style}>It is your turn: {this.state.league.users[this.state.turn].username}</h3>
           </div>
         }
-        <Form onSubmit={this.handleSubmit}>
-          { this.state.round === 10 &&
-            <button className="btn btn-primary">Finished</button>
-          }
+        <Form>
           <Grid style={this.gridStyle}>
             <Row style={this.rowStyle}>
               <Col xs={3} style={this.colStyle}>
@@ -385,6 +383,24 @@ class LiveDraft extends React.Component {
             })}
           </Grid>
         </Form>
+        { this.state.round === 10 &&
+          <div className="static-modal">
+            <Modal.Dialog>
+              <Modal.Header>
+                <Modal.Title>Draft Complete</Modal.Title>
+              </Modal.Header>
+
+              <Modal.Body>
+                The draft is now over! Click Done to end the draft.
+              </Modal.Body>
+
+              <Modal.Footer>
+                <Button bsStyle="primary" onClick={this.handleSubmit}>Done</Button>
+              </Modal.Footer>
+
+            </Modal.Dialog>
+          </div>
+        }
       </div>
     );
   }
