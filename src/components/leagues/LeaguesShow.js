@@ -88,7 +88,7 @@ class LeaguesShow extends React.Component {
   }
 
   render() {
-    if(!this.state.league) return null;
+    if(!this.state.league) return false;
     const draftTimePretty = moment(this.state.league.startTime).format('ddd DD MMM, LT');
     return (
       <div className="container mainPageComponent">
@@ -137,8 +137,11 @@ class LeaguesShow extends React.Component {
                 <div><h1>Your league is drafting in {this.state.time}.</h1> <h3>Make sure you are on this page when the clock hits 00.00.00 or you will not be able to draft.</h3></div>
                 :
                 <div>
-                  <h1>You have missed your draft.</h1>
-                  <h3><Link to={'/leagues/join'}>Join a new league</Link> or <Link to={'/leagues/new'}>create your own</Link> and next time, remember to be on time!</h3>
+                  { this.state.draftTimePretty &&
+                    <div>
+                      <h1>You have missed your draft.</h1>
+                      <h3><Link to={'/leagues/join'}>Join a new league</Link> or <Link to={'/leagues/new'}>create your own</Link> and next time, remember to be on time!</h3></div>
+                  }
                 </div>
               }
             </div>

@@ -7,7 +7,7 @@ const LoginForm = ({ handleChange, handleSubmit, user, errors }) => {
   return (
     <div className="container mainPageComponent">
       <Row>
-        <Col sm={10} smOffset={2}>
+        <Col sm={6} smOffset={2}>
           <h1>Login</h1>
         </Col>
       </Row>
@@ -16,7 +16,7 @@ const LoginForm = ({ handleChange, handleSubmit, user, errors }) => {
           <Col componentClass={ControlLabel} sm={2}>
             Email
           </Col>
-          <Col sm={10}>
+          <Col sm={6}>
             <FormControl
               type="email"
               name="email"
@@ -31,7 +31,7 @@ const LoginForm = ({ handleChange, handleSubmit, user, errors }) => {
           <Col componentClass={ControlLabel} sm={2}>
             Password
           </Col>
-          <Col sm={10}>
+          <Col sm={6}>
             <FormControl
               type="password"
               name="password"
@@ -44,7 +44,7 @@ const LoginForm = ({ handleChange, handleSubmit, user, errors }) => {
         </FormGroup>
 
         <FormGroup>
-          <Col smOffset={2} sm={10}>
+          <Col smOffset={2} sm={6}>
             <Button type="submit" disabled={formInvalid} className="btn btn-green">
               Sign in
             </Button>

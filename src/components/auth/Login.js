@@ -27,7 +27,7 @@ class Login extends React.Component {
       .then(res => {
         Auth.setToken(res.data.token);
         this.props.setUser(res.data.user);
-        this.props.history.push('/');
+        this.props.history.push('/leagues');
       })
       .catch(err => {
         this.setState({ errors: err.response.data });

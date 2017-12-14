@@ -7,7 +7,7 @@ const RegisterForm = ({ handleChange, handleSubmit, user, errors }) => {
   return (
     <div className="container mainPageComponent">
       <Row>
-        <Col sm={10} smOffset={2}>
+        <Col sm={6} smOffset={2}>
           <h1>Register</h1>
         </Col>
       </Row>
@@ -16,7 +16,7 @@ const RegisterForm = ({ handleChange, handleSubmit, user, errors }) => {
           <Col componentClass={ControlLabel} sm={2}>
             Username
           </Col>
-          <Col sm={10}>
+          <Col sm={6}>
             <FormControl
               type="text"
               name="username"
@@ -32,7 +32,7 @@ const RegisterForm = ({ handleChange, handleSubmit, user, errors }) => {
           <Col componentClass={ControlLabel} sm={2}>
             Email
           </Col>
-          <Col sm={10}>
+          <Col sm={6}>
             <FormControl
               type="email"
               name="email"
@@ -48,7 +48,7 @@ const RegisterForm = ({ handleChange, handleSubmit, user, errors }) => {
           <Col componentClass={ControlLabel} sm={2}>
             Image
           </Col>
-          <Col sm={10}>
+          <Col sm={6}>
             <FormControl
               type="text"
               name="image"
@@ -64,7 +64,7 @@ const RegisterForm = ({ handleChange, handleSubmit, user, errors }) => {
           <Col componentClass={ControlLabel} sm={2}>
             Password
           </Col>
-          <Col sm={10}>
+          <Col sm={6}>
             <FormControl
               type="password"
               name="password"
@@ -80,7 +80,7 @@ const RegisterForm = ({ handleChange, handleSubmit, user, errors }) => {
           <Col componentClass={ControlLabel} sm={2}>
             Password Confirmation
           </Col>
-          <Col sm={10}>
+          <Col sm={6}>
             <FormControl
               type="password"
               name="passwordConfirmation"
@@ -93,7 +93,7 @@ const RegisterForm = ({ handleChange, handleSubmit, user, errors }) => {
         </FormGroup>
 
         <FormGroup>
-          <Col smOffset={2} sm={10}>
+          <Col smOffset={2} sm={6}>
             <Button type="submit" disabled={formInvalid} className="btn btn-green">
               Create Account
             </Button>
