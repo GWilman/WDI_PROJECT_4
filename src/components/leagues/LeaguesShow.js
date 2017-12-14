@@ -128,7 +128,20 @@ class LeaguesShow extends React.Component {
           </Col>
         </Row>
         { !this.state.hasMadePick ? (
-          this.state.nowDrafting ? <LiveDraft websocket={this.websocket}/> : <div style={this.center}><h1>Your league is drafting in {this.state.time}.</h1> <h3>Make sure you are on this page when the clock hits 00.00.00 or you will not be able to draft.</h3></div>
+          this.state.nowDrafting ?
+            <LiveDraft websocket={this.websocket}/>
+            :
+            <div style={this.center}>
+              { this.state.time !== ''
+                ?
+                <div><h1>Your league is drafting in {this.state.time}.</h1> <h3>Make sure you are on this page when the clock hits 00.00.00 or you will not be able to draft.</h3></div>
+                :
+                <div>
+                  <h1>You have missed your draft.</h1>
+                  <h3><Link to={'/leagues/join'}>Join a new league</Link> or <Link to={'/leagues/new'}>create your own</Link> and next time, remember to be on time!</h3>
+                </div>
+              }
+            </div>
         ) :
           <PicksGrid />
         }
