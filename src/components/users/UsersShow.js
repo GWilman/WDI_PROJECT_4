@@ -16,6 +16,13 @@ class UsersShow extends React.Component {
 
   imgStyle = {
     borderRadius: '100%',
+    margin: '20px auto 0',
+    width: '250px',
+    height: '250px',
+    position: 'absolute'
+  }
+
+  imgContainer = {
     margin: '0 auto'
   }
 
@@ -50,7 +57,12 @@ class UsersShow extends React.Component {
       <div className="container mainPageComponent">
         <Row>
           <Col sm={6}>
-            <img style={this.imgStyle} src={this.state.user.image} />
+            <div style={this.imgContainer}>
+              <img style={this.imgStyle} src={this.state.user.image} />
+            </div>
+          </Col>
+
+          <Col sm={6}>
             <h1>{this.state.user.username}</h1>
             <h4>{this.state.user.email}</h4>
             <h4>Leagues:</h4>
@@ -60,41 +72,40 @@ class UsersShow extends React.Component {
               </p>
             )}
           </Col>
-
-          <Col sm={6}>
-            <Button onClick={() => {
-              this.setState({ open: !this.state.open, passwordOpen: false });
-            }
-            }>
-              Edit Profile
-            </Button>
-            <Button onClick={() => {
-              this.setState({ passwordOpen: !this.state.passwordOpen, open: false });
-            }
-            }>
-              Change Password
-            </Button>
-            <Collapse in={this.state.open}>
-              <div>
-                <UsersEditForm
-                  user={this.state.user}
-                  errors={this.state.errors}
-                  handleChange={this.handleChange}
-                  handleSubmit={this.handleSubmit}
-                />
-              </div>
-            </Collapse>
-            <Collapse in={this.state.passwordOpen}>
-              <div>
-                <PasswordChangeForm
-                  user={this.state.user}
-                  errors={this.state.errors}
-                  handleChange={this.handleChange}
-                  handleSubmit={this.handleSubmit}
-                />
-              </div>
-            </Collapse>
-          </Col>
+        </Row>
+        <Row>
+          <Button onClick={() => {
+            this.setState({ open: !this.state.open, passwordOpen: false });
+          }
+          }>
+            Edit Profile
+          </Button>
+          <Button onClick={() => {
+            this.setState({ passwordOpen: !this.state.passwordOpen, open: false });
+          }
+          }>
+            Change Password
+          </Button>
+          <Collapse in={this.state.open}>
+            <div>
+              <UsersEditForm
+                user={this.state.user}
+                errors={this.state.errors}
+                handleChange={this.handleChange}
+                handleSubmit={this.handleSubmit}
+              />
+            </div>
+          </Collapse>
+          <Collapse in={this.state.passwordOpen}>
+            <div>
+              <PasswordChangeForm
+                user={this.state.user}
+                errors={this.state.errors}
+                handleChange={this.handleChange}
+                handleSubmit={this.handleSubmit}
+              />
+            </div>
+          </Collapse>
         </Row>
       </div>
     );

@@ -11,7 +11,7 @@ const UsersEditForm = ({ handleChange, handleSubmit, user, errors }) => {
           <Col componentClass={ControlLabel} sm={3}>
             Username
           </Col>
-          <Col sm={9}>
+          <Col sm={6}>
             <FormControl
               type="text"
               name="username"
@@ -27,7 +27,7 @@ const UsersEditForm = ({ handleChange, handleSubmit, user, errors }) => {
           <Col componentClass={ControlLabel} sm={3}>
             Email
           </Col>
-          <Col sm={9}>
+          <Col sm={6}>
             <FormControl
               type="email"
               name="email"
@@ -43,7 +43,7 @@ const UsersEditForm = ({ handleChange, handleSubmit, user, errors }) => {
           <Col componentClass={ControlLabel} sm={3}>
             Image
           </Col>
-          <Col sm={9}>
+          <Col sm={6}>
             <FormControl
               type="text"
               name="image"
@@ -56,7 +56,7 @@ const UsersEditForm = ({ handleChange, handleSubmit, user, errors }) => {
         </FormGroup>
 
         <FormGroup>
-          <Col smOffset={3} sm={9}>
+          <Col smOffset={3} sm={6}>
             <Button type="submit" disabled={formInvalid} className="btn btn-green">
               Save Changes
             </Button>

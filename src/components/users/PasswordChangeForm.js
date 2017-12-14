@@ -12,7 +12,7 @@ const UsersEditForm = ({ handleChange, handleSubmit, user, errors }) => {
           <Col componentClass={ControlLabel} sm={3}>
             New Password
           </Col>
-          <Col sm={9}>
+          <Col sm={6}>
             <FormControl
               type="password"
               name="password"
@@ -28,7 +28,7 @@ const UsersEditForm = ({ handleChange, handleSubmit, user, errors }) => {
           <Col componentClass={ControlLabel} sm={3}>
             Password Confirmation
           </Col>
-          <Col sm={9}>
+          <Col sm={6}>
             <FormControl
               type="password"
               name="passwordConfirmation"
@@ -41,7 +41,7 @@ const UsersEditForm = ({ handleChange, handleSubmit, user, errors }) => {
         </FormGroup>
 
         <FormGroup>
-          <Col smOffset={3} sm={9}>
+          <Col smOffset={3} sm={6}>
             <Button type="submit" disabled={formInvalid} className="btn btn-green">
               Save Changes
             </Button>
