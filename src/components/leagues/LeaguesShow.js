@@ -25,12 +25,31 @@ class LeaguesShow extends React.Component {
 
   timeInterval = null;
 
-  h4Style = {
-    marginTop: '30px'
+  containerStyle = {
+    marginTop: '20px'
   }
 
   center = {
     textAlign: 'center'
+  }
+
+  h1Style = {
+    marginTop: '0',
+    textTransform: 'uppercase',
+    fontWeight: '800'
+  }
+
+  infoContainer = {
+    background: '#fff',
+    border: '1px solid gray',
+    boxShadow: '0 0 4px black',
+    padding: '20px',
+    marginBottom: '10px',
+    borderRadius: '10px'
+  }
+
+  editStyle = {
+    marginRight: '10px'
   }
 
   componentWillUnmount() {
@@ -43,10 +62,6 @@ class LeaguesShow extends React.Component {
       const { userId } = Auth.getPayload();
       this.websocket.emit('set user', { userId, leagueId: this.props.match.params.id });
     });
-
-    // this.websocket.on('draft finished', picks => {
-    //
-    // });
 
     Axios
       .get(`/api/leagues/${this.props.match.params.id}`)
@@ -82,6 +97,11 @@ class LeaguesShow extends React.Component {
       .catch(err => console.error(err));
   }
 
+  completeDraft = () => {
+    console.log(this.state.picks);
+    this.setState({ hasMadePick: true });
+  }
+
   deleteLeague() {
     Axios
       .delete(`/api/leagues/${this.props.match.params.id}`, {
@@ -95,29 +115,31 @@ class LeaguesShow extends React.Component {
     if(!this.state.league) return false;
     const draftTimePretty = moment(this.state.league.startTime).format('ddd DD MMM, LT');
     return (
-      <div className="container mainPageComponent">
+      <div className="container mainPageComponent" style={this.containerStyle}>
         <Row>
           <Col xs={6}>
-            <h1>{this.state.league.name}</h1>
-            { !this.state.nowDrafting &&
-              <div>
-                <h3>Stake: £{this.state.league.stake}</h3>
-                <h3>Owner: {this.state.league.createdBy.username}</h3>
-                <h3>Entry Code: {this.state.league.code}</h3>
-                <h3>Draft: {draftTimePretty}</h3>
-              </div>
-            }
+            <h1 style={this.h1Style}>{this.state.league.name}</h1>
             { (!this.state.nowDrafting || this.state.hasMadePick) && this.state.isOwned &&
               <div>
-                <button className="btn btn-primary" onClick={this.deleteLeague.bind(this)}>Delete League</button>
-                <Link to={`/leagues/${this.props.match.params.id}/edit`}><button className="btn btn-primary">Edit League</button></Link>
+                <Link to={`/leagues/${this.props.match.params.id}/edit`}>
+                  <button className="btn btn-blue" style={this.editStyle}>Edit League</button>
+                </Link>
+                <button className="btn btn-blue" onClick={this.deleteLeague.bind(this)}>Delete League</button>
+              </div>
+            }
+            { (!this.state.nowDrafting && this.state.hasMadePick) &&
+              <div>
+                <h3><strong>Stake:</strong> £{this.state.league.stake}</h3>
+                <h3><strong>Owner:</strong> {this.state.league.createdBy.username}</h3>
+                <h3><strong>Entry Code:</strong> {this.state.league.code}</h3>
+                <h3><strong>Draft:</strong> {draftTimePretty}</h3>
               </div>
             }
           </Col>
           <Col xs={6}>
             { this.state.hasMadePick &&
-              <div>
-                <h4 style={this.h4Style}>How to score:</h4>
+              <div style={this.infoContainer}>
+                <h4>How to score:</h4>
                 <p>1st: 25 points | 2nd: 18 points | 3rd: 15 points | 4th: 10 points | 5th: 5 points | 6th: 0 points</p>
                 <p>In the event of a tie, the sum of the position scores is divided by the number of players in a tie.</p>
                 <p>
@@ -133,7 +155,7 @@ class LeaguesShow extends React.Component {
         </Row>
         { !this.state.hasMadePick ? (
           this.state.nowDrafting ?
-            <LiveDraft websocket={this.websocket}/>
+            <LiveDraft websocket={this.websocket} completeDraft={this.completeDraft}/>
             :
             <div style={this.center}>
               { this.state.time !== ''
@@ -141,7 +163,7 @@ class LeaguesShow extends React.Component {
                 <div><h1>Your league is drafting in {this.state.time}.</h1> <h3>Make sure you are on this page when the clock hits 00.00.00 or you will not be able to draft.</h3></div>
                 :
                 <div>
-                  { this.state.draftTimePretty &&
+                  { draftTimePretty &&
                     <div>
                       <h1>You have missed your draft.</h1>
                       <h3><Link to={'/leagues/join'}>Join a new league</Link> or <Link to={'/leagues/new'}>create your own</Link> and next time, remember to be on time!</h3></div>

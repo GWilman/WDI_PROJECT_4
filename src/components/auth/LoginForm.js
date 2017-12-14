@@ -3,12 +3,19 @@ import React from 'react';
 import { FormGroup, FormControl, Form, Col, Row, ControlLabel, Button } from 'react-bootstrap';
 
 const LoginForm = ({ handleChange, handleSubmit, user, errors }) => {
+
+  const h1Style = {
+    textTransform: 'uppercase',
+    fontWeight: '800',
+    fontSize: '40px'
+  };
+
   const formInvalid = Object.keys(errors).some(key => errors[key]);
   return (
     <div className="container mainPageComponent">
       <Row>
         <Col sm={6} smOffset={2}>
-          <h1>Login</h1>
+          <h1 style={h1Style}>Login</h1>
         </Col>
       </Row>
       <Form horizontal onSubmit={handleSubmit}>

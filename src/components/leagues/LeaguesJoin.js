@@ -15,6 +15,41 @@ class LeaguesIndex extends React.Component {
     error: false
   }
 
+  leagueContainer = {
+    background: '#fff',
+    border: '1px solid gray',
+    boxShadow: '0 0 4px black',
+    padding: '20px',
+    marginBottom: '10px',
+    borderRadius: '10px',
+    textAlign: 'center'
+  }
+
+  h1Style = {
+    textTransform: 'uppercase',
+    fontWeight: '800',
+    fontSize: '40px'
+  }
+
+  h3Style = {
+    marginTop: '4px'
+  }
+
+  inputStyle = {
+    height: '34px',
+    marginBottom: '-2px',
+    paddingLeft: '4px',
+    borderRadius: '4px 0 0 4px',
+    border: '1px solid gray'
+  }
+
+  btnStyle = {
+    margin: '0',
+    borderRadius: '0 4px 4px 0',
+    border: '1px solid gray',
+    marginBottom: '2px'
+  }
+
   componentDidMount() {
 
     const { userId } = Auth.getPayload();
@@ -66,17 +101,17 @@ class LeaguesIndex extends React.Component {
     const filteredLeagues = activeLeagues.filter(league => !(league.users.find(user => user.id === this.state.user.id)));
     return (
       <div className="container mainPageComponent">
-        <h1>Join a League</h1>
+        <h1 style={this.h1Style}>Join a League</h1>
         { filteredLeagues.map(league =>
-          <div key={league.id} className="league-container">
-            <h3>{league.name}</h3>
+          <div key={league.id} className="league-container" style={this.leagueContainer}>
+            <h3 style={this.h3Style}>{league.name}</h3>
             <p>Stake: <strong>£{league.stake}</strong></p>
             { league.createdBy &&
             <p>Owner: <strong>{league.createdBy.username}</strong></p>
             }
             <Form onSubmit={(e) => this.joinLeague(league, e)}>
-              <input type="text" value={league.entryCode} placeholder="Enter code" onChange={this.handleChange} />
-              <button className="btn btn-success">Join</button><br />
+              <input type="text" value={league.entryCode} placeholder="Enter code" onChange={this.handleChange} style={this.inputStyle} />
+              <button className="btn btn-success" style={this.btnStyle}>Join</button><br />
             </Form>
             { league.error && <small className="red">Invalid code</small>}
           </div>

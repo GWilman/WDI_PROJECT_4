@@ -13,7 +13,8 @@ class LeaguesEdit extends React.Component {
       code: null
     },
     user: {},
-    errors: {}
+    errors: {},
+    title: 'Edit League'
   };
 
   componentDidMount() {
@@ -55,6 +56,7 @@ class LeaguesEdit extends React.Component {
         handleChange={this.handleChange}
         league={this.state.league}
         errors={this.state.errors}
+        title={this.state.title}
       />
     );
   }

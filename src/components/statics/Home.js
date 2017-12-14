@@ -14,7 +14,8 @@ const Home = () => {
   const h1Style = {
     margin: '0 0 20px 0',
     textAlign: 'center',
-    fontSize: '60px'
+    fontSize: '60px',
+    textTransform: 'uppercase'
   };
 
   const pStyle = {

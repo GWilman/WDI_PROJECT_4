@@ -14,12 +14,17 @@ class PicksGrid extends React.Component {
     updating: false
   }
 
+  containerStyle = {
+    marginTop: '20px'
+  }
+
   gridStyle = {
-    border: '2px solid black',
+    border: '4px solid black',
     fontSize: '12px',
     padding: '0',
     textAlign: 'center',
-    margin: '0'
+    margin: '20px 0',
+    borderRadius: '8px'
   };
 
   rowStyle = {
@@ -44,13 +49,41 @@ class PicksGrid extends React.Component {
     margin: '0 4px'
   }
 
+  imageStyle = {
+    lineHeight: '70px'
+  }
+
   usernameStyle = {
     lineHeight: '70px',
-    fontWeight: '800'
+    fontWeight: '800',
+    textAlign: 'left'
   }
 
   inputStyle = {
-    width: '40px'
+    width: '40px',
+    borderRadius: '4px',
+    marginTop: '10px',
+    textAlign: 'center'
+  }
+
+  updateStyle = {
+    margin: '10px auto'
+  }
+
+  pointsStyle = {
+    marginTop: '10px'
+  }
+
+  totalPointsStyle = {
+    marginTop: '10px',
+    fontSize: '20px',
+    fontWeight: '800'
+  }
+
+  imgStyle = {
+    height: '34px',
+    width: '34px',
+    borderRadius: '100%'
   }
 
   componentDidMount() {
@@ -104,13 +137,13 @@ class PicksGrid extends React.Component {
   render() {
     const orderedPicks = _.orderBy(this.state.picks, ['totalPoints'], ['desc']);
     return (
-      <div>
+      <div style={this.containerStyle}>
         { this.state.isOwned && !this.state.updating &&
-          <button className="btn btn-primary" onClick={this.update}>Update Scores</button>
+          <button className="btn btn-blue" onClick={this.update} style={this.updateStyle}>Update Scores</button>
         }
         <Form onSubmit={this.handleSubmit}>
           { this.state.isOwned && this.state.updating &&
-            <button className="btn btn-primary">Save Changes</button>
+            <button className="btn btn-blue" style={this.updateStyle}>Save Changes</button>
           }
           <Grid style={this.gridStyle}>
             <Row style={this.rowStyle}>
@@ -151,7 +184,16 @@ class PicksGrid extends React.Component {
             { orderedPicks.map(pick => {
               return (<Row key={pick.id} style={this.rowStyle}>
                 <Col xs={2} style={this.colStyle}>
-                  <p style={this.usernameStyle}>{pick.createdBy.username}</p>
+                  <Col xs={3} xsOffset={2}>
+                    { pick.createdBy.image &&
+                      <p style={this.imageStyle}><img src={pick.createdBy.image} style={this.imgStyle} /></p>
+                    }
+                  </Col>
+                  <Col xs={7}>
+                    <p style={this.usernameStyle}>
+                      {pick.createdBy.username}
+                    </p>
+                  </Col>
                 </Col>
                 <Col xs={1} style={this.colStyle}>
                   { this.state.updating ?
@@ -166,7 +208,7 @@ class PicksGrid extends React.Component {
                       <p>{pick.champion.name}</p>
                     </div>
                     :
-                    <p>{pick.championPoints}<br />{pick.champion.name}</p>
+                    <p style={this.pointsStyle}>{pick.championPoints}<br />{pick.champion.name}</p>
                   }
                 </Col>
                 <Col xs={1} style={this.colStyle}>
@@ -182,7 +224,7 @@ class PicksGrid extends React.Component {
                       <p>{pick.runnerUp.name}</p>
                     </div>
                     :
-                    <p>{pick.runnerUpPoints}<br />{pick.runnerUp.name}</p>
+                    <p style={this.pointsStyle}>{pick.runnerUpPoints}<br />{pick.runnerUp.name}</p>
                   }
                 </Col>
                 <Col xs={1} style={this.colStyle}>
@@ -198,7 +240,7 @@ class PicksGrid extends React.Component {
                       <p>{pick.topScoringTeam.name}</p>
                     </div>
                     :
-                    <p>{pick.topScoringTeamPoints}<br />{pick.topScoringTeam.name}</p>
+                    <p style={this.pointsStyle}>{pick.topScoringTeamPoints}<br />{pick.topScoringTeam.name}</p>
                   }
                 </Col>
                 <Col xs={1} style={this.colStyle}>
@@ -214,7 +256,7 @@ class PicksGrid extends React.Component {
                       <p>{pick.mostYellowsTeam.name}</p>
                     </div>
                     :
-                    <p>{pick.mostYellowsTeamPoints}<br />{pick.mostYellowsTeam.name}</p>
+                    <p style={this.pointsStyle}>{pick.mostYellowsTeamPoints}<br />{pick.mostYellowsTeam.name}</p>
                   }
                 </Col>
                 <Col xs={1} style={this.colStyle}>
@@ -230,7 +272,7 @@ class PicksGrid extends React.Component {
                       <p>{pick.topScorer.name}</p>
                     </div>
                     :
-                    <p>{pick.topScorerPoints}<br />{pick.topScorer.name}</p>
+                    <p style={this.pointsStyle}>{pick.topScorerPoints}<br />{pick.topScorer.name}</p>
                   }
                 </Col>
                 <Col xs={1} style={this.colStyle}>
@@ -246,7 +288,7 @@ class PicksGrid extends React.Component {
                       <p>{pick.mostAssists.name}</p>
                     </div>
                     :
-                    <p>{pick.mostAssistsPoints}<br />{pick.mostAssists.name}</p>
+                    <p style={this.pointsStyle}>{pick.mostAssistsPoints}<br />{pick.mostAssists.name}</p>
                   }
                 </Col>
                 <Col xs={1} style={this.colStyle}>
@@ -262,7 +304,7 @@ class PicksGrid extends React.Component {
                       <p>{pick.mostYellows.name}</p>
                     </div>
                     :
-                    <p>{pick.mostYellowsPoints}<br />{pick.mostYellows.name}</p>
+                    <p style={this.pointsStyle}>{pick.mostYellowsPoints}<br />{pick.mostYellows.name}</p>
                   }
                 </Col>
                 <Col xs={1} style={this.colStyle}>
@@ -278,7 +320,7 @@ class PicksGrid extends React.Component {
                       <p>{pick.sentOff.name}</p>
                     </div>
                     :
-                    <p>{pick.sentOffPoints}<br />{pick.sentOff.name}</p>
+                    <p style={this.pointsStyle}>{pick.sentOffPoints}<br />{pick.sentOff.name}</p>
                   }
                 </Col>
                 <Col xs={1} style={this.colStyle}>
@@ -294,11 +336,11 @@ class PicksGrid extends React.Component {
                       <p>{pick.finalMoM.name}</p>
                     </div>
                     :
-                    <p>{pick.finalMoMPoints}<br />{pick.finalMoM.name}</p>
+                    <p style={this.pointsStyle}>{pick.finalMoMPoints}<br />{pick.finalMoM.name}</p>
                   }
                 </Col>
                 <Col xs={1} style={this.endColStyle}>
-                  <p><strong>{pick.totalPoints}</strong></p>
+                  <p style={this.totalPointsStyle}><strong>{pick.totalPoints}</strong></p>
                 </Col>
               </Row>);
             })}

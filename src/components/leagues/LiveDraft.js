@@ -2,7 +2,7 @@ import React from 'react';
 import Axios from 'axios';
 import Promise from 'bluebird';
 import { withRouter } from 'react-router-dom';
-import { Grid, Row, Col, Form, Modal, Button } from 'react-bootstrap';
+import { Grid, Row, Col, Form } from 'react-bootstrap';
 import Autosuggest from 'react-bootstrap-autosuggest';
 
 import Auth from '../../lib/Auth';
@@ -50,9 +50,14 @@ class LiveDraft extends React.Component {
     margin: '0 4px'
   }
 
+  imageStyle = {
+    lineHeight: '70px'
+  }
+
   usernameStyle = {
     lineHeight: '70px',
-    fontWeight: '800'
+    fontWeight: '800',
+    textAlign: 'left'
   }
 
   imgStyle = {
@@ -146,6 +151,7 @@ class LiveDraft extends React.Component {
   }
 
   handleChange = (value, id, name, type, isSocket) => {
+
     if(!value) return false;
     console.log(value, id, name, type, isSocket);
     const dataList = this.state[name].filter(choice => choice !== value);
@@ -173,6 +179,8 @@ class LiveDraft extends React.Component {
     let turn = this.state.turn + 1;
     if (turn === this.state.picks.length) turn = 0;
     let round;
+
+    console.log(this.state.picks);
     if (this.state.picks.length > 1) {
       round = ((Object.keys(this.state.picks[turn]).length) - 1);
     } else {
@@ -185,25 +193,21 @@ class LiveDraft extends React.Component {
       [name]: dataList,
       turn: turn,
       round: round
-    }, () => console.log(this.state.picks));
+    }, () => {
 
-    if (this.state.round === 10) {
-      this.props.websocket.emit('draft finished', this.state.picks);
-    }
+      if (this.state.round === 10) {
+        console.log('AXIOS!');
+        const { userId } = Auth.getPayload();
+        const picks = this.state.picks.find(pick => pick.createdBy === userId );
+        Axios
+          .post('/api/picks', picks, {
+            headers: {'Authorization': `Bearer ${Auth.getToken()}`}
+          })
+          .then(() => this.props.completeDraft())
+          .catch(err => console.error(err));
+      }
+    });
 
-  }
-
-  handleSubmit = (e) => {
-    e.preventDefault();
-    this.setState({ round: 11 });
-    const { userId } = Auth.getPayload();
-    const picks = this.state.picks.find(pick => pick.createdBy === userId );
-    Axios
-      .post('/api/picks', picks, {
-        headers: {'Authorization': `Bearer ${Auth.getToken()}`}
-      })
-      .then(res => console.log(res))
-      .catch(err => console.error(err));
   }
 
   getNameById = (id, type) => {
@@ -265,9 +269,16 @@ class LiveDraft extends React.Component {
             { this.state.league.users && this.state.members.map((user, i) => {
               return (<Row key={user.id} style={this.rowStyle}>
                 <Col xs={3} style={this.colStyle}>
-                  <p style={this.usernameStyle}>
-                    { user.image && <img src={user.image} style={this.imgStyle} />}
-                    {user.username}</p>
+                  <Col xs={3} xsOffset={2}>
+                    { user.image &&
+                      <p style={this.imageStyle}><img src={user.image} style={this.imgStyle} /></p>
+                    }
+                  </Col>
+                  <Col xs={7}>
+                    <p style={this.usernameStyle}>
+                      {user.username}
+                    </p>
+                  </Col>
                 </Col>
                 <Col xs={1} style={this.colStyle}>
                   <Autosuggest
@@ -390,24 +401,6 @@ class LiveDraft extends React.Component {
             })}
           </Grid>
         </Form>
-        { this.state.round === 10 &&
-          <div className="static-modal">
-            <Modal.Dialog style={this.modalStyle}>
-              <Modal.Header>
-                <Modal.Title>Draft Complete</Modal.Title>
-              </Modal.Header>
-
-              <Modal.Body>
-                The draft is now over! Click Done to end the draft.
-              </Modal.Body>
-
-              <Modal.Footer>
-                <Button bsStyle="primary" onClick={this.handleSubmit}>Done</Button>
-              </Modal.Footer>
-
-            </Modal.Dialog>
-          </div>
-        }
       </div>
     );
   }

@@ -13,7 +13,8 @@ class LeaguesNew extends React.Component {
       code: null
     },
     user: {},
-    errors: {}
+    errors: {},
+    title: 'Create League'
   };
 
   componentDidMount() {
@@ -62,6 +63,7 @@ class LeaguesNew extends React.Component {
         handleChange={this.handleChange}
         league={this.state.league}
         errors={this.state.errors}
+        title={this.state.title}
       />
     );
   }

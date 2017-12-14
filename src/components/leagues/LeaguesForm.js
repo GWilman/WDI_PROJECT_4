@@ -5,13 +5,20 @@ import Datetime from 'react-datetime';
 import '../../scss/datetime.scss';
 
 
-const LeaguesForm = ({ handleChange, handleSubmit, league, errors }) => {
+const LeaguesForm = ({ handleChange, handleSubmit, league, errors, title }) => {
+
+  const h1Style = {
+    textTransform: 'uppercase',
+    fontWeight: '800',
+    fontSize: '40px'
+  };
+
   const formInvalid = Object.keys(errors).some(key => errors[key]);
   return (
     <div className="container mainPageComponent">
       <Row>
-        <Col sm={10} smOffset={2}>
-          <h1>Create League</h1>
+        <Col sm={6} smOffset={2}>
+          <h1 style={h1Style}>{title}</h1>
         </Col>
       </Row>
       <Form horizontal onSubmit={handleSubmit}>
@@ -19,7 +26,7 @@ const LeaguesForm = ({ handleChange, handleSubmit, league, errors }) => {
           <Col componentClass={ControlLabel} sm={2}>
             League Name
           </Col>
-          <Col sm={10}>
+          <Col sm={6}>
             <FormControl
               type="text"
               name="name"
@@ -34,7 +41,7 @@ const LeaguesForm = ({ handleChange, handleSubmit, league, errors }) => {
           <Col componentClass={ControlLabel} sm={2}>
             Stake (£)
           </Col>
-          <Col sm={10}>
+          <Col sm={6}>
             <FormControl
               type="number"
               name="stake"
@@ -49,7 +56,7 @@ const LeaguesForm = ({ handleChange, handleSubmit, league, errors }) => {
           <Col componentClass={ControlLabel} sm={2}>
             Time of Draft
           </Col>
-          <Col sm={10}>
+          <Col sm={6}>
             <Datetime
               type="datetime"
               name="startTime"
@@ -61,9 +68,9 @@ const LeaguesForm = ({ handleChange, handleSubmit, league, errors }) => {
         </FormGroup>
 
         <FormGroup>
-          <Col smOffset={2} sm={10}>
+          <Col smOffset={2} sm={6}>
             <Button type="submit" disabled={formInvalid} className="btn btn-blue">
-              Submit
+              {title}
             </Button>
           </Col>
         </FormGroup>
