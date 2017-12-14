@@ -5,13 +5,9 @@ import { withRouter } from 'react-router-dom';
 import { Grid, Row, Col, Form, Modal, Button } from 'react-bootstrap';
 import Autosuggest from 'react-bootstrap-autosuggest';
 
-import socketIOClient from 'socket.io-client';
-
 import Auth from '../../lib/Auth';
 
 class LiveDraft extends React.Component {
-
-  webSocket = socketIOClient('/socket');
 
   state = {
     league: {},
@@ -20,7 +16,8 @@ class LiveDraft extends React.Component {
     picks: [],
     turn: 0,
     round: 1,
-    sockets: []
+    sockets: [],
+    members: []
   }
 
   gridStyle = {
@@ -76,32 +73,11 @@ class LiveDraft extends React.Component {
 
   componentDidMount() {
 
-    this.webSocket.on('connect', () => {
-      console.log(`${this.webSocket.id} connected`);
+    this.props.websocket.emit('draft started', this.props.match.params.id);
+    console.log('DRAFT STARTED', this.props.match.params.id);
 
-      const { userId } = Auth.getPayload();
-      this.webSocket.emit('set user', userId);
-      this.webSocket.userId = userId;
-      const socketsArray = this.state.sockets.concat(this.webSocket.userId);
-      this.setState({ sockets: socketsArray }, () => console.log(this.state.sockets));
-
-      this.webSocket.on('add user', data => {
-        this.setState({ sockets: this.state.sockets.concat(data) }, () => console.log(this.state.sockets));
-      });
-
-      // this.webSocket.on('new user', users => {
-      //   if(!this.state.league.users) return false;
-      //   if(users.length > this.state.league.users.length) {
-      //     const league = Object.assign({}, this.state.league, { users });
-      //     this.setState({ league });
-      //   }
-      // });
-
-      this.webSocket.on('pickMade', data => {
-        console.log('pickMade');
-        this.handleChange(data.value, data.id, data.name, data.type, true);
-      });
-
+    this.props.websocket.on('pick made', data => {
+      this.handleChange(data.value, data.id, data.name, data.type, true);
     });
 
     const promises = {
@@ -110,36 +86,46 @@ class LiveDraft extends React.Component {
       players: Axios.get('/api/players').then(res => res.data)
     };
 
-    Promise.props(promises)
-      .then(data => {
-        this.setState(data, () => this.webSocket.emit('new user', this.state.league.users));
-        const picks = [];
-        this.state.league.users.forEach(user => {
-          picks.push({
-            createdBy: user.id,
-            league: this.props.match.params.id
-          });
-        });
+    this.props.websocket.on('draft users', users => {
+      console.log(users);
+      this.setState({ users }, () => {
 
-        const teams = data.teams.map(team => team.name);
-        const players = data.players.map(player => player.name);
+        console.log('DRAFT USERS', this.state.users);
+        Promise.props(promises)
+          .then(data => {
+            const members = data.league.users.filter(user => this.state.users.includes(user.id));
+            console.log('MEMBERS', members);
+            const picks = data.league.users.map(user => {
+              return {
+                createdBy: user.id,
+                league: this.props.match.params.id
+              };
+            })
+              .filter(pick => this.state.users.includes(pick.createdBy));
 
-        this.setState({
-          champion: teams,
-          runnerUp: teams,
-          topScoringTeam: teams,
-          mostYellowsTeam: teams,
-          topScorer: players,
-          mostAssists: players,
-          mostYellows: players,
-          sentOff: players,
-          finalMoM: players,
-          picks
-        });
+            const teams = data.teams.map(team => team.name);
+            const players = data.players.map(player => player.name);
 
-      })
-      .catch(err => console.error(err));
+            const newState = Object.assign(data, {
+              champion: teams,
+              runnerUp: teams,
+              topScoringTeam: teams,
+              mostYellowsTeam: teams,
+              topScorer: players,
+              mostAssists: players,
+              mostYellows: players,
+              sentOff: players,
+              finalMoM: players,
+              picks,
+              members
+            });
 
+            this.setState(newState, () => console.log(this.state));
+
+          })
+          .catch(err => console.error(err));
+      });
+    });
   }
 
   checkTurn = (id, round) => {
@@ -159,7 +145,7 @@ class LiveDraft extends React.Component {
     console.log(value, id, name, type, isSocket);
     const dataList = this.state[name].filter(choice => choice !== value);
 
-    if(!isSocket) this.webSocket.emit('pickMade', { value, id, name, type });
+    if(!isSocket) this.props.websocket.emit('pick made', { value, id, name, type });
 
     const { teams, players } = this.state;
     if(type === 'team') {
@@ -197,7 +183,7 @@ class LiveDraft extends React.Component {
     }, () => console.log(this.state.picks));
 
     if (this.state.round === 10) {
-      this.webSocket.emit('draftFinished');
+      this.props.websocket.emit('draft finished');
     }
 
   }
@@ -225,12 +211,10 @@ class LiveDraft extends React.Component {
   }
 
   render() {
-    if (!this.state.league.users) return false;
-    const players = this.state.league.users.filter(user => this.state.sockets.includes(user.id));
-    console.log('players:', players);
+    if (!this.state.members) return false;
     return (
       <div>
-        { this.state.round === 10 &&
+        { this.state.round >= 10 &&
           <h1>DRAFT COMPLETE</h1>
         }
         { this.state.picks.length > 0 && this.state.round !== 10 &&
@@ -273,7 +257,7 @@ class LiveDraft extends React.Component {
                 <p style={this.pStyle}><strong>MoM (Final)</strong></p>
               </Col>
             </Row>
-            { this.state.league.users && this.state.league.users.map((user, i) => {
+            { this.state.league.users && this.state.members.map((user, i) => {
               return (<Row key={user.id} style={this.rowStyle}>
                 <Col xs={3} style={this.colStyle}>
                   <p style={this.usernameStyle}>

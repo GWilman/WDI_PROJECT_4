@@ -9,6 +9,8 @@ import Auth from '../../lib/Auth';
 import LiveDraft from './LiveDraft.js';
 import PicksGrid from './PicksGrid.js';
 
+import socketIOClient from 'socket.io-client';
+
 class LeaguesShow extends React.Component {
   state = {
     league: null,
@@ -19,10 +21,16 @@ class LeaguesShow extends React.Component {
     time: ''
   }
 
+  websocket = socketIOClient('/socket');
+
   timeInterval = null;
 
   h4Style = {
     marginTop: '30px'
+  }
+
+  center = {
+    textAlign: 'center'
   }
 
   componentWillUnmount() {
@@ -30,6 +38,12 @@ class LeaguesShow extends React.Component {
   }
 
   componentDidMount() {
+    this.websocket.on('connect', () => {
+      console.log(`${this.websocket.id} connected`);
+      const { userId } = Auth.getPayload();
+      this.websocket.emit('set user', { userId, leagueId: this.props.match.params.id });
+    });
+
     Axios
       .get(`/api/leagues/${this.props.match.params.id}`)
       .then(res => {
@@ -114,7 +128,7 @@ class LeaguesShow extends React.Component {
           </Col>
         </Row>
         { !this.state.hasMadePick ? (
-          this.state.nowDrafting ? <LiveDraft /> : <div><h1>Your league is drafting in {this.state.time}.</h1> <h3>Make sure you are on this page when the clock hits 00.00.00 or you will not be able to draft.</h3></div>
+          this.state.nowDrafting ? <LiveDraft websocket={this.websocket}/> : <div style={this.center}><h1>Your league is drafting in {this.state.time}.</h1> <h3>Make sure you are on this page when the clock hits 00.00.00 or you will not be able to draft.</h3></div>
         ) :
           <PicksGrid />
         }
