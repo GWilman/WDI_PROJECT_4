@@ -43,7 +43,7 @@ const Home = () => {
     background: 'rgba(255, 255, 255, 0.8)',
     width: '60%',
     margin: '0 auto',
-    borderRadius: '4px'
+    borderRadius: '10px'
   };
 
   return (

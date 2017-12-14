@@ -18,7 +18,8 @@ class LeaguesShow extends React.Component {
     hasMadePick: false,
     nowDrafting: false,
     draftTimePretty: null,
-    time: ''
+    time: '',
+    draftMissed: false
   }
 
   websocket = socketIOClient('/socket');
@@ -85,6 +86,8 @@ class LeaguesShow extends React.Component {
           const draftTime = moment(this.state.league.startTime);
           const diff = (draftTime.diff(now));
 
+          if (diff < 0 && !this.state.hasMadePick) this.setState({ missedDraft: true });
+
           if (diff > 0) {
             const time = moment(diff).format('HH:mm:ss');
             this.setState({ time: time });
@@ -127,7 +130,7 @@ class LeaguesShow extends React.Component {
                 <button className="btn btn-blue" onClick={this.deleteLeague.bind(this)}>Delete League</button>
               </div>
             }
-            { (!this.state.nowDrafting && this.state.hasMadePick) &&
+            { !this.state.nowDrafting &&
               <div>
                 <h3><strong>Stake:</strong> £{this.state.league.stake}</h3>
                 <h3><strong>Owner:</strong> {this.state.league.createdBy.username}</h3>
@@ -163,7 +166,7 @@ class LeaguesShow extends React.Component {
                 <div><h1>Your league is drafting in {this.state.time}.</h1> <h3>Make sure you are on this page when the clock hits 00.00.00 or you will not be able to draft.</h3></div>
                 :
                 <div>
-                  { draftTimePretty &&
+                  { this.state.missedDraft &&
                     <div>
                       <h1>You have missed your draft.</h1>
                       <h3><Link to={'/leagues/join'}>Join a new league</Link> or <Link to={'/leagues/new'}>create your own</Link> and next time, remember to be on time!</h3></div>
