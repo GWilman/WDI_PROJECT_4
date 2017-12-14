@@ -44,6 +44,10 @@ class LeaguesShow extends React.Component {
       this.websocket.emit('set user', { userId, leagueId: this.props.match.params.id });
     });
 
+    // this.websocket.on('draft finished', picks => {
+    //
+    // });
+
     Axios
       .get(`/api/leagues/${this.props.match.params.id}`)
       .then(res => {

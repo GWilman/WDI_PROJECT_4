@@ -71,12 +71,17 @@ class LiveDraft extends React.Component {
     margin: '10px 0'
   }
 
+  modalStyle = {
+    paddingTop: '200px'
+  }
+
   componentDidMount() {
 
     this.props.websocket.emit('draft started', this.props.match.params.id);
     console.log('DRAFT STARTED', this.props.match.params.id);
 
     this.props.websocket.on('pick made', data => {
+      console.log('pick made', data);
       this.handleChange(data.value, data.id, data.name, data.type, true);
     });
 
@@ -183,7 +188,7 @@ class LiveDraft extends React.Component {
     }, () => console.log(this.state.picks));
 
     if (this.state.round === 10) {
-      this.props.websocket.emit('draft finished');
+      this.props.websocket.emit('draft finished', this.state.picks);
     }
 
   }
@@ -387,7 +392,7 @@ class LiveDraft extends React.Component {
         </Form>
         { this.state.round === 10 &&
           <div className="static-modal">
-            <Modal.Dialog>
+            <Modal.Dialog style={this.modalStyle}>
               <Modal.Header>
                 <Modal.Title>Draft Complete</Modal.Title>
               </Modal.Header>
