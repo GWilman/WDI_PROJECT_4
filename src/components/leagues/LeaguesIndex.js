@@ -39,47 +39,57 @@ class LeaguesIndex extends React.Component {
     margin: '8px'
   }
 
+  homeStyle = {
+    backgroundImage: 'url(https://i.imgur.com/j3OqQRl.jpg)',
+    minHeight: 'calc(100vh - 53px)',
+    width: '100%',
+    backgroundSize: 'cover',
+    backgroundRepeat: 'repeat'
+  };
+
   h1Style = {
-    fontSize: '40px',
     textTransform: 'uppercase',
-    fontWeight: '800'
-  }
+    fontWeight: '800',
+    fontSize: '40px',
+    color: '#fff'
+  };
 
   render() {
     if (!this.state.leagues) return false;
     const now = moment();
     return (
-      <div className="container mainPageComponent">
-        <h1 style={this.h1Style}>My Leagues</h1>
-        { this.state.leagues.length > 0 ?
-          <div>
-            { this.state.leagues.map(league =>
-              <div key={league.id} style={this.leagueContainer}>
-                <Row><Col xs={6}>
-                  <h3 style={this.h3Style}>{league.name}</h3>
-                  <Link to={`/leagues/${league.id}`}>
-                    <button className="btn btn-blue">League Hub</button>
-                  </Link>
-                </Col>
-                <Col xs={6}>
-                  <div style={this.infoStyle}>
-                    <p>Stake: <strong>£{league.stake}</strong></p>
-                    <p>Owner: <strong>{league.createdBy.username}</strong></p>
-                    { (moment(league.startTime).diff(now, 'seconds') > 0) ?
-                      <p>Drafting {moment().to(league.startTime)}</p>
-                      :
-                      <p>Draft Complete</p>
-                    }
-                  </div>
-                </Col></Row>
-              </div>
-            )}
-          </div>
-          :
-          <div>
-            <h2>You are not currently competing in any leagues. Why not <Link to="/leagues/join">join a league</Link> or <Link to="/leagues/new">create a new league</Link>?</h2>
-          </div>
-        }
+      <div style={this.homeStyle}>
+        <div className="container mainPageComponent">
+          <h1 style={this.h1Style}>My Leagues</h1>
+          { this.state.leagues.length > 0 ?
+            <div>
+              { this.state.leagues.map(league =>
+                <div key={league.id} style={this.leagueContainer}>
+                  <Row><Col xs={6}>
+                    <h3 style={this.h3Style}>{league.name}</h3>
+                    <Link to={`/leagues/${league.id}`}>
+                      <button className="btn btn-blue">League Hub</button>
+                    </Link>
+                  </Col>
+                  <Col xs={6}>
+                    <div style={this.infoStyle}>
+                      <p>Stake: <strong>£{league.stake}</strong></p>
+                      <p>Owner: <strong>{league.createdBy.username}</strong></p>
+                      { (moment(league.startTime).diff(now, 'seconds') > 0) ?
+                        <p>Drafting {moment().to(league.startTime)}</p>
+                        :
+                        <p>Draft Complete</p>
+                      }
+                    </div>
+                  </Col></Row>
+                </div>
+              )}
+            </div>
+            :
+            <div style={this.leagueContainer}><h4>You are not currently competing in any leagues. Why not <Link to="/leagues/join">join a league</Link> or <Link to="/leagues/new">create a new league</Link>?</h4>
+            </div>
+          }
+        </div>
       </div>
     );
   }

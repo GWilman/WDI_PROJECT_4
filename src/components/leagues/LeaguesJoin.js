@@ -25,11 +25,20 @@ class LeaguesIndex extends React.Component {
     textAlign: 'center'
   }
 
+  homeStyle = {
+    backgroundImage: 'url(https://i.imgur.com/j3OqQRl.jpg)',
+    minHeight: 'calc(100vh - 53px)',
+    width: '100%',
+    backgroundSize: 'cover',
+    backgroundRepeat: 'repeat'
+  };
+
   h1Style = {
     textTransform: 'uppercase',
     fontWeight: '800',
-    fontSize: '40px'
-  }
+    fontSize: '40px',
+    color: '#fff'
+  };
 
   h3Style = {
     marginTop: '4px'
@@ -100,25 +109,28 @@ class LeaguesIndex extends React.Component {
     const activeLeagues = this.state.leagues.filter(league => (moment(league.startTime).diff(now, 'seconds') > 0));
     const filteredLeagues = activeLeagues.filter(league => !(league.users.find(user => user.id === this.state.user.id)));
     return (
-      <div className="container mainPageComponent">
-        <h1 style={this.h1Style}>Join a League</h1>
-        { filteredLeagues.map(league =>
-          <div key={league.id} className="league-container" style={this.leagueContainer}>
-            <h3 style={this.h3Style}>{league.name}</h3>
-            <p>Stake: <strong>£{league.stake}</strong></p>
-            { league.createdBy &&
-            <p>Owner: <strong>{league.createdBy.username}</strong></p>
-            }
-            <Form onSubmit={(e) => this.joinLeague(league, e)}>
-              <input type="text" value={league.entryCode} placeholder="Enter code" onChange={this.handleChange} style={this.inputStyle} />
-              <button className="btn btn-success" style={this.btnStyle}>Join</button><br />
-            </Form>
-            { league.error && <small className="red">Invalid code</small>}
-          </div>
-        )}
-        { filteredLeagues.length === 0 &&
-          <h2>There are currently no leagues for you to join. Why not <Link to="/leagues/new">create a new league</Link>?</h2>
-        }
+      <div style={this.homeStyle}>
+        <div className="container mainPageComponent">
+          <h1 style={this.h1Style}>Join a League</h1>
+          { filteredLeagues.map(league =>
+            <div key={league.id} style={this.leagueContainer}>
+              <h3 style={this.h3Style}>{league.name}</h3>
+              <p>Stake: <strong>£{league.stake}</strong></p>
+              { league.createdBy &&
+                <p>Owner: <strong>{league.createdBy.username}</strong></p>
+              }
+              <Form onSubmit={(e) => this.joinLeague(league, e)}>
+                <input type="text" value={league.entryCode} placeholder="Enter code" onChange={this.handleChange} style={this.inputStyle} />
+                <button className="btn btn-green" style={this.btnStyle}>Join</button><br />
+              </Form>
+              { league.error && <small className="red">Invalid code</small>}
+            </div>
+          )}
+          { filteredLeagues.length === 0 &&
+            <div style={this.leagueContainer}><h4>There are currently no leagues for you to join. Why not <Link to="/leagues/new">create a new league</Link>?</h4>
+            </div>
+          }
+        </div>
       </div>
     );
   }

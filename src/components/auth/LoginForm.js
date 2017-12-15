@@ -6,10 +6,10 @@ const LoginForm = ({ handleChange, handleSubmit, user, errors }) => {
 
   const homeStyle = {
     backgroundImage: 'url(https://i.imgur.com/j3OqQRl.jpg)',
-    height: '100vh',
+    minHeight: 'calc(100vh - 53px)',
     width: '100%',
-    backgroundPosition: 'cover',
-    backgroundRepeat: 'noRepeat'
+    backgroundSize: 'cover',
+    backgroundRepeat: 'repeat'
   };
 
   const h1Style = {
