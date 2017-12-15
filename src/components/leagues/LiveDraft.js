@@ -69,12 +69,14 @@ class LiveDraft extends React.Component {
 
   h1Style = {
     textAlign: 'center',
-    marginBottom: '0'
+    marginBottom: '0',
+    color: '#fff'
   }
 
   h3Style = {
     textAlign: 'center',
-    margin: '10px 0'
+    margin: '10px 0',
+    color: '#fff'
   }
 
   modalStyle = {
