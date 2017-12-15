@@ -55,6 +55,7 @@ class LeaguesShow extends React.Component {
 
   componentWillUnmount() {
     clearInterval(this.timeInterval);
+    this.websocket.disconnect(true);
   }
 
   componentDidMount() {

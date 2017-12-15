@@ -17,13 +17,13 @@ const LeaguesForm = ({ handleChange, handleSubmit, league, errors, title }) => {
   return (
     <div className="container mainPageComponent">
       <Row>
-        <Col sm={6} smOffset={2}>
+        <Col sm={6} smOffset={3}>
           <h1 style={h1Style}>{title}</h1>
         </Col>
       </Row>
       <Form horizontal onSubmit={handleSubmit}>
         <FormGroup controlId="formHorizontalLeagueName">
-          <Col componentClass={ControlLabel} sm={2}>
+          <Col componentClass={ControlLabel} sm={3}>
             League Name
           </Col>
           <Col sm={6}>
@@ -38,7 +38,7 @@ const LeaguesForm = ({ handleChange, handleSubmit, league, errors, title }) => {
         </FormGroup>
 
         <FormGroup controlId="formHorizontalStake">
-          <Col componentClass={ControlLabel} sm={2}>
+          <Col componentClass={ControlLabel} sm={3}>
             Stake (£)
           </Col>
           <Col sm={6}>
@@ -53,7 +53,7 @@ const LeaguesForm = ({ handleChange, handleSubmit, league, errors, title }) => {
         </FormGroup>
 
         <FormGroup controlId="formHorizontalTime">
-          <Col componentClass={ControlLabel} sm={2}>
+          <Col componentClass={ControlLabel} sm={3}>
             Time of Draft
           </Col>
           <Col sm={6}>
@@ -68,7 +68,7 @@ const LeaguesForm = ({ handleChange, handleSubmit, league, errors, title }) => {
         </FormGroup>
 
         <FormGroup>
-          <Col smOffset={2} sm={6}>
+          <Col smOffset={3} sm={6}>
             <Button type="submit" disabled={formInvalid} className="btn btn-blue">
               {title}
             </Button>
