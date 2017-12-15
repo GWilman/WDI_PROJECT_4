@@ -3,15 +3,25 @@ import React from 'react';
 import { FormGroup, FormControl, Form, Col, ControlLabel, Button } from 'react-bootstrap';
 
 const UsersEditForm = ({ handleChange, handleSubmit, user, errors }) => {
+
+  const formStyle = {
+    marginTop: '20px'
+  };
+
+  const white = {
+    color: '#fff'
+  };
+
   const formInvalid = Object.keys(errors).some(key => errors[key]);
+
   return (
     <div>
-      <Form horizontal onSubmit={handleSubmit}>
+      <Form horizontal onSubmit={handleSubmit} style={formStyle}>
         <FormGroup controlId="formHorizontalUsername">
-          <Col componentClass={ControlLabel} sm={3}>
+          <Col componentClass={ControlLabel} sm={2} style={white}>
             Username
           </Col>
-          <Col sm={6}>
+          <Col sm={9}>
             <FormControl
               type="text"
               name="username"
@@ -24,10 +34,10 @@ const UsersEditForm = ({ handleChange, handleSubmit, user, errors }) => {
         </FormGroup>
 
         <FormGroup controlId="formHorizontalEmail">
-          <Col componentClass={ControlLabel} sm={3}>
+          <Col componentClass={ControlLabel} sm={2} style={white}>
             Email
           </Col>
-          <Col sm={6}>
+          <Col sm={9}>
             <FormControl
               type="email"
               name="email"
@@ -40,10 +50,10 @@ const UsersEditForm = ({ handleChange, handleSubmit, user, errors }) => {
         </FormGroup>
 
         <FormGroup controlId="formHorizontalImage">
-          <Col componentClass={ControlLabel} sm={3}>
+          <Col componentClass={ControlLabel} sm={2} style={white}>
             Image
           </Col>
-          <Col sm={6}>
+          <Col sm={9}>
             <FormControl
               type="text"
               name="image"
@@ -56,7 +66,7 @@ const UsersEditForm = ({ handleChange, handleSubmit, user, errors }) => {
         </FormGroup>
 
         <FormGroup>
-          <Col smOffset={3} sm={6}>
+          <Col smOffset={2} sm={9}>
             <Button type="submit" disabled={formInvalid} className="btn btn-green">
               Save Changes
             </Button>

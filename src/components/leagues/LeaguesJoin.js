@@ -31,7 +31,7 @@ class LeaguesIndex extends React.Component {
     width: '100%',
     backgroundSize: 'cover',
     backgroundRepeat: 'repeat'
-  };
+  }
 
   h1Style = {
     textTransform: 'uppercase',

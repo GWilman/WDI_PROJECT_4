@@ -24,7 +24,8 @@ class PicksGrid extends React.Component {
     padding: '0',
     textAlign: 'center',
     margin: '20px 0',
-    borderRadius: '8px'
+    borderRadius: '8px',
+    background: '#fff'
   };
 
   rowStyle = {

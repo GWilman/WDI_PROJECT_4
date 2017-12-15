@@ -14,16 +14,39 @@ class UsersShow extends React.Component {
     errors: {}
   }
 
+  homeStyle = {
+    backgroundImage: 'url(https://i.imgur.com/j3OqQRl.jpg)',
+    minHeight: 'calc(100vh - 53px)',
+    width: '100%',
+    backgroundSize: 'cover',
+    backgroundRepeat: 'repeat'
+  }
+
   imgStyle = {
     borderRadius: '100%',
     margin: '20px auto 0',
     width: '250px',
     height: '250px',
-    position: 'absolute'
+    border: '4px solid #fff'
   }
 
-  imgContainer = {
-    margin: '0 auto'
+  leagueContainer = {
+    background: '#fff',
+    border: '1px solid gray',
+    boxShadow: '0 0 4px black',
+    padding: '20px',
+    marginBottom: '10px',
+    borderRadius: '10px',
+    textAlign: 'center'
+  }
+
+  white = {
+    color: '#fff'
+  }
+
+  btnStyle = {
+    marginRight: '10px',
+    marginTop: '10px'
   }
 
   componentDidMount() {
@@ -54,59 +77,59 @@ class UsersShow extends React.Component {
   render() {
     if(!this.state.user.leagues) return null;
     return (
-      <div className="container mainPageComponent">
-        <Row>
-          <Col sm={6}>
-            <div style={this.imgContainer}>
+      <div style={this.homeStyle}>
+        <div className="container mainPageComponent">
+          <Row>
+            <Col sm={6}>
               <img style={this.imgStyle} src={this.state.user.image} />
-            </div>
-          </Col>
+              <h1 style={this.white}>{this.state.user.username}</h1>
+              <h4 style={this.white}>{this.state.user.email}</h4>
+              <Button className="btn btn-blue" style={this.btnStyle} onClick={() => {
+                this.setState({ open: !this.state.open, passwordOpen: false });
+              }
+              }>
+                Edit Profile
+              </Button>
+              <Button className="btn btn-blue" style={this.btnStyle} onClick={() => {
+                this.setState({ passwordOpen: !this.state.passwordOpen, open: false });
+              }
+              }>
+                Change Password
+              </Button>
+              <Collapse in={this.state.open}>
+                <div>
+                  <UsersEditForm
+                    user={this.state.user}
+                    errors={this.state.errors}
+                    handleChange={this.handleChange}
+                    handleSubmit={this.handleSubmit}
+                  />
+                </div>
+              </Collapse>
+              <Collapse in={this.state.passwordOpen}>
+                <div>
+                  <PasswordChangeForm
+                    user={this.state.user}
+                    errors={this.state.errors}
+                    handleChange={this.handleChange}
+                    handleSubmit={this.handleSubmit}
+                  />
+                </div>
+              </Collapse>
+            </Col>
 
-          <Col sm={6}>
-            <h1>{this.state.user.username}</h1>
-            <h4>{this.state.user.email}</h4>
-            <h4>Leagues:</h4>
-            { this.state.user.leagues.map(league =>
-              <p key={league.id}>
-                <Link to={`/leagues/${league.id}`}>{league.name}</Link>
-              </p>
-            )}
-          </Col>
-        </Row>
-        <Row>
-          <Button onClick={() => {
-            this.setState({ open: !this.state.open, passwordOpen: false });
-          }
-          }>
-            Edit Profile
-          </Button>
-          <Button onClick={() => {
-            this.setState({ passwordOpen: !this.state.passwordOpen, open: false });
-          }
-          }>
-            Change Password
-          </Button>
-          <Collapse in={this.state.open}>
-            <div>
-              <UsersEditForm
-                user={this.state.user}
-                errors={this.state.errors}
-                handleChange={this.handleChange}
-                handleSubmit={this.handleSubmit}
-              />
-            </div>
-          </Collapse>
-          <Collapse in={this.state.passwordOpen}>
-            <div>
-              <PasswordChangeForm
-                user={this.state.user}
-                errors={this.state.errors}
-                handleChange={this.handleChange}
-                handleSubmit={this.handleSubmit}
-              />
-            </div>
-          </Collapse>
-        </Row>
+            <Col sm={6}>
+              <div style={this.leagueContainer}>
+                <h4>Leagues:</h4>
+                { this.state.user.leagues.map(league =>
+                  <p key={league.id}>
+                    <Link to={`/leagues/${league.id}`}>{league.name}</Link>
+                  </p>
+                )}
+              </div>
+            </Col>
+          </Row>
+        </div>
       </div>
     );
   }

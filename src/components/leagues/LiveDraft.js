@@ -25,7 +25,8 @@ class LiveDraft extends React.Component {
     fontSize: '12px',
     padding: '0',
     textAlign: 'center',
-    margin: '0'
+    margin: '0',
+    background: '#fff'
   };
 
   rowStyle = {

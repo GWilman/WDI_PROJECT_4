@@ -26,18 +26,26 @@ class LeaguesShow extends React.Component {
 
   timeInterval = null;
 
-  containerStyle = {
-    marginTop: '20px'
-  }
+  homeStyle = {
+    backgroundImage: 'url(https://i.imgur.com/j3OqQRl.jpg)',
+    minHeight: 'calc(100vh - 53px)',
+    width: '100%',
+    backgroundSize: 'cover',
+    backgroundRepeat: 'repeat'
+  };
 
   center = {
     textAlign: 'center'
   }
 
   h1Style = {
-    marginTop: '0',
     textTransform: 'uppercase',
-    fontWeight: '800'
+    fontWeight: '800',
+    color: '#fff'
+  }
+
+  h3Style = {
+    color: '#fff'
   }
 
   infoContainer = {
@@ -46,11 +54,23 @@ class LeaguesShow extends React.Component {
     boxShadow: '0 0 4px black',
     padding: '20px',
     marginBottom: '10px',
+    marginTop: '20px',
     borderRadius: '10px'
   }
 
   editStyle = {
     marginRight: '10px'
+  }
+
+  messageContainer = {
+    background: '#fff',
+    border: '1px solid gray',
+    boxShadow: '0 0 4px black',
+    padding: '20px',
+    marginBottom: '10px',
+    marginTop: '20px',
+    borderRadius: '10px',
+    textAlign: 'center'
   }
 
   componentWillUnmount() {
@@ -119,65 +139,67 @@ class LeaguesShow extends React.Component {
     if(!this.state.league) return false;
     const draftTimePretty = moment(this.state.league.startTime).format('ddd DD MMM, LT');
     return (
-      <div className="container mainPageComponent" style={this.containerStyle}>
-        <Row>
-          <Col xs={6}>
-            <h1 style={this.h1Style}>{this.state.league.name}</h1>
-            { (!this.state.nowDrafting || this.state.hasMadePick) && this.state.isOwned &&
-              <div>
-                <Link to={`/leagues/${this.props.match.params.id}/edit`}>
-                  <button className="btn btn-blue" style={this.editStyle}>Edit League</button>
-                </Link>
-                <button className="btn btn-blue" onClick={this.deleteLeague.bind(this)}>Delete League</button>
-              </div>
-            }
-            { !this.state.nowDrafting &&
-              <div>
-                <h3><strong>Stake:</strong> £{this.state.league.stake}</h3>
-                <h3><strong>Owner:</strong> {this.state.league.createdBy.username}</h3>
-                <h3><strong>Entry Code:</strong> {this.state.league.code}</h3>
-                <h3><strong>Draft:</strong> {draftTimePretty}</h3>
-              </div>
-            }
-          </Col>
-          <Col xs={6}>
-            { this.state.hasMadePick &&
-              <div style={this.infoContainer}>
-                <h4>How to score:</h4>
-                <p>1st: 25 points | 2nd: 18 points | 3rd: 15 points | 4th: 10 points | 5th: 5 points | 6th: 0 points</p>
-                <p>In the event of a tie, the sum of the position scores is divided by the number of players in a tie.</p>
-                <p>
-                  Tie examples:<br />
-                  In a two-way tie for second place, each player will score 16.5 points<br />
-                  (18 + 15 / 2)<br />
-                  In a three-way tie for third, each player will score 10 points<br />
-                  (15 + 10 + 5 / 3).
-                </p>
-              </div>
-            }
-          </Col>
-        </Row>
-        { !this.state.hasMadePick ? (
-          this.state.nowDrafting ?
-            <LiveDraft websocket={this.websocket} completeDraft={this.completeDraft}/>
-            :
-            <div style={this.center}>
-              { this.state.time !== ''
-                ?
-                <div><h1>Your league is drafting in {this.state.time}.</h1> <h3>Make sure you are on this page when the clock hits 00.00.00 or you will not be able to draft.</h3></div>
-                :
+      <div style={this.homeStyle}>
+        <div className="container mainPageComponent">
+          <Row>
+            <Col xs={6}>
+              <h1 style={this.h1Style}>{this.state.league.name}</h1>
+              { (!this.state.nowDrafting || this.state.hasMadePick) && this.state.isOwned &&
                 <div>
-                  { this.state.missedDraft &&
-                    <div>
-                      <h1>You have missed your draft.</h1>
-                      <h3><Link to={'/leagues/join'}>Join a new league</Link> or <Link to={'/leagues/new'}>create your own</Link> and next time, remember to be on time!</h3></div>
-                  }
+                  <Link to={`/leagues/${this.props.match.params.id}/edit`}>
+                    <button className="btn btn-blue" style={this.editStyle}>Edit League</button>
+                  </Link>
+                  <button className="btn btn-blue" onClick={this.deleteLeague.bind(this)}>Delete League</button>
                 </div>
               }
-            </div>
-        ) :
-          <PicksGrid />
-        }
+              { !this.state.nowDrafting &&
+                <div>
+                  <h3 style={this.h3Style}><strong>Stake:</strong> £{this.state.league.stake}</h3>
+                  <h3 style={this.h3Style}><strong>Owner:</strong> {this.state.league.createdBy.username}</h3>
+                  <h3 style={this.h3Style}><strong>Entry Code:</strong> {this.state.league.code}</h3>
+                  <h3 style={this.h3Style}><strong>Draft:</strong> {draftTimePretty}</h3>
+                </div>
+              }
+            </Col>
+            <Col xs={6}>
+              { this.state.hasMadePick &&
+                <div style={this.infoContainer}>
+                  <h4>How to score:</h4>
+                  <p>1st: 25 points | 2nd: 18 points | 3rd: 15 points | 4th: 10 points | 5th: 5 points | 6th: 0 points</p>
+                  <p>In the event of a tie, the sum of the position scores is divided by the number of players in a tie.</p>
+                  <p>
+                    Tie examples:<br />
+                    In a two-way tie for second place, each player will score 16.5 points<br />
+                    (18 + 15 / 2)<br />
+                    In a three-way tie for third, each player will score 10 points<br />
+                    (15 + 10 + 5 / 3).
+                  </p>
+                </div>
+              }
+            </Col>
+          </Row>
+          { !this.state.hasMadePick ? (
+            this.state.nowDrafting ?
+              <LiveDraft websocket={this.websocket} completeDraft={this.completeDraft}/>
+              :
+              <div style={this.center}>
+                { this.state.time !== ''
+                  ?
+                  <div style={this.messageContainer}><h1>Your league is drafting in {this.state.time}.</h1> <h3>Make sure you are on this page when the clock hits 00.00.00 or you will not be able to draft.</h3></div>
+                  :
+                  <div>
+                    { this.state.missedDraft &&
+                      <div style={this.messageContainer}>
+                        <h1>You have missed your draft.</h1>
+                        <h3><Link to={'/leagues/join'}>Join a new league</Link> or <Link to={'/leagues/new'}>create your own</Link> and next time, remember to be on time!</h3></div>
+                    }
+                  </div>
+                }
+              </div>
+          ) :
+            <PicksGrid />
+          }
+        </div>
       </div>
     );
   }
