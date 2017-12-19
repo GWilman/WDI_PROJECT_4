@@ -96,7 +96,7 @@ class LeaguesShow extends React.Component {
       })
       .then(() => {
         this.timeInterval = setInterval(() => {
-          if (this.state.time === '00:00:00') {
+          if (this.state.time === '00:00:00:00') {
             this.setState({ nowDrafting: true  });
             return clearInterval(this.timeInterval);
           }
@@ -110,7 +110,7 @@ class LeaguesShow extends React.Component {
           if (diff < 0 && !this.state.hasMadePick) this.setState({ missedDraft: true });
 
           if (diff > 0) {
-            const time = moment(diff).format('HH:mm:ss');
+            const time = moment(diff).format('DD:HH:mm:ss');
             this.setState({ time: time });
           } else {
             clearInterval(this.timeInterval);
@@ -122,7 +122,6 @@ class LeaguesShow extends React.Component {
   }
 
   completeDraft = () => {
-    console.log(this.state.picks);
     this.setState({ hasMadePick: true });
   }
 
@@ -185,7 +184,7 @@ class LeaguesShow extends React.Component {
               <div style={this.center}>
                 { this.state.time !== ''
                   ?
-                  <div style={this.messageContainer}><h1>Your league is drafting in {this.state.time}.</h1> <h3>Make sure you are on this page when the clock hits 00.00.00 or you will not be able to draft.</h3></div>
+                  <div style={this.messageContainer}><h1>Your league is drafting in {this.state.time}.</h1> <h3>Make sure you are on this page when the clock hits zero or you will not be able to draft.</h3></div>
                   :
                   <div>
                     { this.state.missedDraft &&
