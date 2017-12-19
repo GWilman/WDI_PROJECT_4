@@ -77,6 +77,7 @@ describe('Users', function() {
             .to.be.an('array')
             .and.have.property(0)
             .and.have.all.keys([
+              '_id',
               'id',
               'username',
               'email',
@@ -202,6 +203,7 @@ describe('Users', function() {
         .end((err, res) => {
           expect(res.body)
             .and.have.all.keys([
+              '_id',
               'id',
               'username',
               'email',
@@ -270,6 +272,7 @@ describe('Users', function() {
         .end((err, res) => {
           expect(res.body)
             .and.have.all.keys([
+              '_id',
               'id',
               'username',
               'email',

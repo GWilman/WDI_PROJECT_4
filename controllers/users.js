@@ -28,9 +28,11 @@ function usersShow(req, res, next) {
 }
 
 function usersUpdate(req, res, next) {
-  for (var i = 0; i < req.body.leagues.length; i++) {
-    if (req.body.leagues[i].id) {
-      req.body.leagues[i] = req.body.leagues[i].id;
+  if (req.body.leagues) {
+    for (var i = 0; i < req.body.leagues.length; i++) {
+      if (req.body.leagues[i].id) {
+        req.body.leagues[i] = req.body.leagues[i].id;
+      }
     }
   }
   User

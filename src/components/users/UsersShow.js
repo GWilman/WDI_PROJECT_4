@@ -75,7 +75,8 @@ class UsersShow extends React.Component {
     Axios
       .put(`/api/users/${this.state.user.id}`, this.state.user)
       .then(() => {
-        this.props.history.push('/');
+        this.props.history.push(`/users/${this.state.user.id}`);
+        this.setState({ open: false, passwordOpen: false });
       })
       .catch(err => this.setState({ errors: err.response.data.errors }));
   }

@@ -12,9 +12,9 @@ class LeaguesIndex extends React.Component {
   }
 
   componentDidMount() {
-    const userId = Auth.getPayload();
+    const { userId } = Auth.getPayload();
     Axios
-      .get(`/api/users/${userId.userId}`)
+      .get(`/api/users/${userId}`)
       .then(res => {
         this.setState({ leagues: res.data.leagues });
       })
@@ -65,23 +65,25 @@ class LeaguesIndex extends React.Component {
             <div>
               { this.state.leagues.map(league =>
                 <div key={league.id} style={this.leagueContainer}>
-                  <Row><Col xs={6}>
-                    <h3 style={this.h3Style}>{league.name}</h3>
-                    <Link to={`/leagues/${league.id}`}>
-                      <button className="btn btn-blue">League Hub</button>
-                    </Link>
-                  </Col>
-                  <Col xs={6}>
-                    <div style={this.infoStyle}>
-                      <p>Stake: <strong>£{league.stake}</strong></p>
-                      <p>Owner: <strong>{league.createdBy.username}</strong></p>
-                      { (moment(league.startTime).diff(now, 'seconds') > 0) ?
-                        <p>Drafting {moment().to(league.startTime)}</p>
-                        :
-                        <p>Draft Complete</p>
-                      }
-                    </div>
-                  </Col></Row>
+                  <Row>
+                    <Col xs={6}>
+                      <h3 style={this.h3Style}>{league.name}</h3>
+                      <Link to={`/leagues/${league.id}`}>
+                        <button className="btn btn-blue">League Hub</button>
+                      </Link>
+                    </Col>
+                    <Col xs={6}>
+                      <div style={this.infoStyle}>
+                        <p>Stake: <strong>£{league.stake}</strong></p>
+                        <p>Owner: <strong>{league.createdBy.username}</strong></p>
+                        { (moment(league.startTime).diff(now, 'seconds') > 0) ?
+                          <p>Drafting {moment().to(league.startTime)}</p>
+                          :
+                          <p>Draft Complete</p>
+                        }
+                      </div>
+                    </Col>
+                  </Row>
                 </div>
               )}
             </div>

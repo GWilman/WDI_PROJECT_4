@@ -218,7 +218,7 @@ describe('Authentications', function() {
         .end((err, res) => {
           expect(res.status).to.eq(401);
           expect(res.body).to.be.a('object');
-          expect(res.body.message).to.eq('Unauthorized');
+          expect(res.body.message).to.eq('Invalid Credentials');
           expect(Object.keys(res.body)).to.not.include('token');
           done();
         });
@@ -235,7 +235,7 @@ describe('Authentications', function() {
         .end((err, res) => {
           expect(res.status).to.eq(401);
           expect(res.body).to.be.a('object');
-          expect(res.body.message).to.eq('Unauthorized');
+          expect(res.body.message).to.eq('Invalid Credentials');
           expect(Object.keys(res.body)).to.not.include('token');
           done();
         });
