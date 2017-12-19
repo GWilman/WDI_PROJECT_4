@@ -28,7 +28,7 @@ const pickSchema = new mongoose.Schema({
 pickSchema
   .virtual('totalPoints')
   .get(function() {
-    return (this.championPoints + this.runnerUpPoints + this.topScoringTeamPoints + this.mostYellowsTeamPoints + this.topScorerPoints + this.mostAssistsPoints + this.mostYellowsPoints + this.sentOffPoints + this.finalMoMPoints);
+    return (this.championPoints + (this.runnerUpPoints || 0) + (this.topScoringTeamPoints || 0) + (this.mostYellowsTeamPoints || 0) + (this.topScorerPoints || 0) + (this.mostAssistsPoints || 0) + (this.mostYellowsPoints || 0) + (this.sentOffPoints || 0) + (this.finalMoMPoints || 0));
   });
 
 module.exports = mongoose.model('Pick', pickSchema);

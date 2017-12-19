@@ -142,7 +142,7 @@ class LeaguesShow extends React.Component {
       <div style={this.homeStyle}>
         <div className="container mainPageComponent">
           <Row>
-            <Col xs={6}>
+            <Col xs={12} sm={6}>
               <h1 style={this.h1Style}>{this.state.league.name}</h1>
               { (!this.state.nowDrafting || this.state.hasMadePick) && this.state.isOwned &&
                 <div>
@@ -161,7 +161,7 @@ class LeaguesShow extends React.Component {
                 </div>
               }
             </Col>
-            <Col xs={6}>
+            <Col xs={12} sm={6}>
               { this.state.hasMadePick &&
                 <div style={this.infoContainer}>
                   <h4>How to score:</h4>

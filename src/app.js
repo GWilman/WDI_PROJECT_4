@@ -28,8 +28,8 @@ class App extends React.Component {
   }
 
   navImage = {
-    height: '20px',
-    width: '20px',
+    height: '18px',
+    width: '18px',
     borderRadius: '100%'
   }
 

@@ -5,7 +5,7 @@ const Home = () => {
 
   const homeStyle = {
     backgroundImage: 'url(https://i.imgur.com/KUsFPXg.jpg)',
-    height: '100vh',
+    height: 'calc(100vh - 53px)',
     width: '100%',
     backgroundPosition: 'cover',
     backgroundRepeat: 'noRepeat'

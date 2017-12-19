@@ -27,7 +27,8 @@ class UsersShow extends React.Component {
     margin: '20px auto 0',
     width: '250px',
     height: '250px',
-    border: '4px solid #fff'
+    border: '4px solid #fff',
+    display: 'block'
   }
 
   leagueContainer = {
@@ -36,17 +37,22 @@ class UsersShow extends React.Component {
     boxShadow: '0 0 4px black',
     padding: '20px',
     marginBottom: '10px',
+    marginTop: '20px',
     borderRadius: '10px',
     textAlign: 'center'
   }
 
   white = {
-    color: '#fff'
+    color: '#fff',
+    textAlign: 'center'
   }
 
   btnStyle = {
-    marginRight: '10px',
-    marginTop: '10px'
+    margin: '10px'
+  }
+
+  btnContainer = {
+    textAlign: 'center'
   }
 
   componentDidMount() {
@@ -80,22 +86,24 @@ class UsersShow extends React.Component {
       <div style={this.homeStyle}>
         <div className="container mainPageComponent">
           <Row>
-            <Col sm={6}>
-              <img style={this.imgStyle} src={this.state.user.image} />
+            <Col xs={12} sm={6}>
+              { this.state.user.image ? <img style={this.imgStyle} src={this.state.user.image} /> : <img style={this.imgStyle} src="https://myspace.com/common/images/user.png" />}
               <h1 style={this.white}>{this.state.user.username}</h1>
               <h4 style={this.white}>{this.state.user.email}</h4>
-              <Button className="btn btn-blue" style={this.btnStyle} onClick={() => {
-                this.setState({ open: !this.state.open, passwordOpen: false });
-              }
-              }>
-                Edit Profile
-              </Button>
-              <Button className="btn btn-blue" style={this.btnStyle} onClick={() => {
-                this.setState({ passwordOpen: !this.state.passwordOpen, open: false });
-              }
-              }>
-                Change Password
-              </Button>
+              <div style={this.btnContainer}>
+                <Button className="btn btn-blue" style={this.btnStyle} onClick={() => {
+                  this.setState({ open: !this.state.open, passwordOpen: false });
+                }
+                }>
+                  Edit Profile
+                </Button>
+                <Button className="btn btn-blue" style={this.btnStyle} onClick={() => {
+                  this.setState({ passwordOpen: !this.state.passwordOpen, open: false });
+                }
+                }>
+                  Change Password
+                </Button>
+              </div>
               <Collapse in={this.state.open}>
                 <div>
                   <UsersEditForm
@@ -118,9 +126,9 @@ class UsersShow extends React.Component {
               </Collapse>
             </Col>
 
-            <Col sm={6}>
+            <Col xs={12} sm={6}>
               <div style={this.leagueContainer}>
-                <h4>Leagues:</h4>
+                <h4>MY LEAGUES:</h4>
                 { this.state.user.leagues.map(league =>
                   <p key={league.id}>
                     <Link to={`/leagues/${league.id}`}>{league.name}</Link>

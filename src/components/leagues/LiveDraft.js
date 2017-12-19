@@ -21,11 +21,12 @@ class LiveDraft extends React.Component {
   }
 
   gridStyle = {
-    border: '2px solid black',
+    border: '4px solid black',
     fontSize: '12px',
     padding: '0',
     textAlign: 'center',
-    margin: '0',
+    margin: '20px 0',
+    borderRadius: '8px',
     background: '#fff'
   };
 
@@ -86,10 +87,8 @@ class LiveDraft extends React.Component {
   componentDidMount() {
 
     this.props.websocket.emit('draft started', this.props.match.params.id);
-    console.log('DRAFT STARTED', this.props.match.params.id);
 
     this.props.websocket.on('pick made', data => {
-      console.log('pick made', data);
       this.handleChange(data.value, data.id, data.name, data.type, true);
     });
 
@@ -100,14 +99,12 @@ class LiveDraft extends React.Component {
     };
 
     this.props.websocket.on('draft users', users => {
-      console.log(users);
       this.setState({ users }, () => {
 
         console.log('DRAFT USERS', this.state.users);
         Promise.props(promises)
           .then(data => {
             const members = data.league.users.filter(user => this.state.users.includes(user.id));
-            console.log('MEMBERS', members);
             const picks = data.league.users.map(user => {
               return {
                 createdBy: user.id,
@@ -156,7 +153,6 @@ class LiveDraft extends React.Component {
   handleChange = (value, id, name, type, isSocket) => {
 
     if(!value) return false;
-    console.log(value, id, name, type, isSocket);
     const dataList = this.state[name].filter(choice => choice !== value);
 
     if(!isSocket) this.props.websocket.emit('pick made', { value, id, name, type });
@@ -183,13 +179,11 @@ class LiveDraft extends React.Component {
     if (turn === this.state.picks.length) turn = 0;
     let round;
 
-    console.log(this.state.picks);
     if (this.state.picks.length > 1) {
       round = ((Object.keys(this.state.picks[turn]).length) - 1);
     } else {
       round = this.state.round + 1;
     }
-    console.log('turn:', turn, 'round:', round);
 
     this.setState({
       picks,
@@ -199,7 +193,6 @@ class LiveDraft extends React.Component {
     }, () => {
 
       if (this.state.round === 10) {
-        console.log('AXIOS!');
         const { userId } = Auth.getPayload();
         const picks = this.state.picks.find(pick => pick.createdBy === userId );
         Axios
