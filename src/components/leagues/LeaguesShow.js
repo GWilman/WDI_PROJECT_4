@@ -96,7 +96,7 @@ class LeaguesShow extends React.Component {
       })
       .then(() => {
         this.timeInterval = setInterval(() => {
-          if (this.state.time === '00:00:00:00') {
+          if (this.state.time === '00:00:00') {
             this.setState({ nowDrafting: true  });
             return clearInterval(this.timeInterval);
           }
@@ -110,7 +110,7 @@ class LeaguesShow extends React.Component {
           if (diff < 0 && !this.state.hasMadePick) this.setState({ missedDraft: true });
 
           if (diff > 0) {
-            const time = moment(diff).format('DD:HH:mm:ss');
+            const time = moment(diff).format('HH:mm:ss');
             this.setState({ time: time });
           } else {
             clearInterval(this.timeInterval);
