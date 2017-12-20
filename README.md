@@ -14,7 +14,7 @@ The Vince Grid is a MERN stack application which implements WebSockets for the l
 
 <p align="center"><img src="https://imgur.com/J9SDcxI.jpg" width="700"></p>
 
-###### For my initial planning, I spent a lot of time thinking about what would constitute my MVP. I really wanted to create a live draft client in order to replicate the drafting experience as closely as possible. Many things, such as a team/player only being able to be selected by one user, don't really work with an asynchronous drafting approach. However, as I had no previous experience with WebSockets, I first set out to make a simpler version of the app, where users could make their picks at whatever time after joining a league. Once this was completed, I had enough time to implement socket.io and create the live draft client. I used sketch to produce some wireframes for my app.
+###### For my initial planning, I spent a lot of time thinking about what would constitute my MVP. I really wanted to create a live draft client in order to replicate the drafting experience as closely as possible. Many things, such as a team/player only being able to be selected by one user, don't really work with an asynchronous drafting approach. However, as I had no previous experience with WebSockets, I first set out to make a simpler version of the app, where users could make their picks at whatever time after joining a league. Once this was completed, I had enough time to implement Socket.IO and create the live draft client. I used sketch to produce some wireframes for my app.
 
 <p align="center"><img src="https://imgur.com/komgoSe.pngg" width="700"></p>
 
