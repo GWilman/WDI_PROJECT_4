@@ -10,6 +10,8 @@ The Vince Grid is a MERN stack application which implements WebSockets for the l
 
 ##### [Visit website](https://vincegrid.herokuapp.com/)
 
+*Please be aware that Heroku apps go to sleep after 30 mins of inactivity and may take a little time to load*
+
 ---
 
 <p align="center"><img src="https://imgur.com/J9SDcxI.jpg" width="700"></p>
