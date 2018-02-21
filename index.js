@@ -7,6 +7,11 @@ const server = http.createServer(app);
 const sockets = require('./lib/sockets');
 sockets.connect(server);
 
+// Stop app from sleeping on Heroku
+setInterval(() => {
+  http.get('http://vincegrid.herokuapp.com');
+}, 900000);
+
 const mongoose = require('mongoose');
 mongoose.Promise = require('bluebird');
 mongoose.plugin(require('./lib/globalToJSON'));

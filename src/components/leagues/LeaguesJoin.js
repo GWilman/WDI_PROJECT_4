@@ -27,7 +27,7 @@ class LeaguesIndex extends React.Component {
 
   homeStyle = {
     backgroundImage: 'url(https://i.imgur.com/j3OqQRl.jpg)',
-    minHeight: 'calc(100vh - 53px)',
+    minHeight: 'calc(100vh - 52px)',
     width: '100%',
     backgroundSize: 'cover',
     backgroundRepeat: 'repeat'

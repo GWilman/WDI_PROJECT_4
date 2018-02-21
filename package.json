@@ -21,6 +21,7 @@
     "body-parser": "^1.18.1",
     "bootstrap-css-only": "^3.3.7",
     "express": "^4.15.4",
+    "http": "^0.0.0",
     "jsonwebtoken": "^8.1.0",
     "lodash": "^4.17.4",
     "moment": "^2.19.4",
